@@ -1,4 +1,6 @@
 .env
+.env.local
+
 .DS_*
 *.log
 logs
