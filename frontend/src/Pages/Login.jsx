@@ -9,8 +9,8 @@ function Login() {
   const { setUser } = useAuth();
 
   const [isLogin, setIsLogin] = useState(true);
-  const [name, setName] = useState(""); // small "n" to match your Mongoose model
-  const [email, setEmail] = useState("");
+
+
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -18,13 +18,11 @@ function Login() {
     e.preventDefault();
 
     try {
-      const url = isLogin
-        ? "http://localhost:9000/api/v1/users/login"
-        : "http://localhost:9000/api/v1/users/register";
+      const url = "http://localhost:9000/api/v1/users/login"
+        
 
-      const payload = isLogin
-        ? { phone, password }
-        : { name, email, phone, password };
+      const payload ={ phone, password }
+
 
       const res = await axios.post(url, payload, { withCredentials: true });
 
@@ -68,7 +66,10 @@ function Login() {
             className={`px-4 py-2 rounded-md ${
               !isLogin ? "bg-cherryWine text-white" : "bg-darkPlum text-gray-300"
             }`}
-            onClick={() => setIsLogin(false)}
+            onClick={() => {
+              setIsLogin(false);
+              if(location.pathname!=="/register")navigate("/register");
+            }}
           >
             Signup
           </button>
@@ -76,26 +77,7 @@ function Login() {
 
         {/* Form */}
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {!isLogin && (
-            <>
-              <input
-                type="text"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 rounded-md bg-darkPlum text-white placeholder:text-gray-300"
-                required
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 rounded-md bg-darkPlum text-white placeholder:text-gray-300"
-                required
-              />
-            </>
-          )}
+          
           <input
             type="number"
             placeholder="Phone"
