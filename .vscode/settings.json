@@ -1,0 +1,7 @@
+{
+  "liveServer.settings.multiRootWorkspaceName": "ecommerce",
+  "files.associations": {
+    "string": "cpp",
+    "iostream": "cpp"
+  }
+}
