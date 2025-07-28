@@ -9,7 +9,7 @@ import Footer from "./Footer";
 const sampleProducts = Array.from({ length: 12 }).map((_, index) => ({
   title: `Product ${index + 1}`,
   price: Math.floor(Math.random() * 10000) + 500,
-  image: "", // Empty for now
+  image: "", 
 }));
 
 const Home = () => {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast"; // make sure you have react-hot-toast installed
+import { toast } from "react-hot-toast";
 
 function Login() {
   const navigate = useNavigate();
@@ -33,9 +33,9 @@ function Login() {
         setUser(user);
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Success feedback
+
         toast.success(`Welcome, ${user.name || "User"}!`);
-        navigate("/"); // Redirect to home
+        navigate("/"); // Redirect 
       } else {
         toast.error("Login failed: No user data");
         console.error("⚠️ Unexpected response:", res?.data);

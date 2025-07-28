@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-darkPlum text-white py-10 px-6 mt-10">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
 
-        {/* Logo & Description */}
+
         <div>
           <h2 className="text-2xl font-bold text-cherryWine mb-2">GLIPKart</h2>
           <p className="text-sm text-gray-300">
@@ -14,7 +14,7 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Quick Links */}
+
         <div>
           <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
           <ul className="space-y-2 text-sm text-gray-300">
@@ -25,7 +25,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Support */}
+
         <div>
           <h3 className="text-lg font-semibold mb-3">Support</h3>
           <ul className="space-y-2 text-sm text-gray-300">
@@ -36,7 +36,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Contact Info */}
+
         <div>
           <h3 className="text-lg font-semibold mb-3">Contact</h3>
           <ul className="space-y-2 text-sm text-gray-300">
@@ -47,7 +47,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom */}
+
       <div className="mt-10 border-t border-gray-700 pt-4 text-center text-sm text-gray-400">
         © {new Date().getFullYear()} GLIPKart. All rights reserved.
       </div>

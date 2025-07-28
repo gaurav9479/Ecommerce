@@ -9,7 +9,7 @@ function Register() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
 
-  const [name, setName] = useState(""); // Capital "Name" in payload
+  const [name, setName] = useState(""); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
@@ -19,7 +19,7 @@ function Register() {
 
     try {
       const url = "http://localhost:9000/api/v1/users/register";
-      const payload = { Name: name, email, phone, password }; // Capital Name
+      const payload = { Name: name, email, phone, password }; 
       const res = await axios.post(url, payload, { withCredentials: true });
 
       const user = res?.data?.data;

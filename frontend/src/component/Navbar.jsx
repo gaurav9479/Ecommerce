@@ -9,7 +9,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear user from context and localStorage
+
     setUser(null);
     localStorage.removeItem('user');
     toast.success("Logged out successfully");
@@ -19,17 +19,17 @@ const Navbar = () => {
   return (
     <nav className="bg-midnightBlack text-white px-6 py-3 shadow-md flex justify-between items-center">
       
-      {/* Logo */}
+
       <Link to="/" className="text-2xl font-bold text-crimsonPlum">GLIPKart</Link>
       
-      {/* Navigation Links */}
+
       <div className="flex items-center gap-6 text-sm">
         <Link to="/category/electronics" className="hover:text-cherryWine">Electronics</Link>
         <Link to="/category/clothing" className="hover:text-cherryWine">Clothing</Link>
         <Link to="/orders" className="hover:text-cherryWine">Orders</Link>
       </div>
 
-      {/* Right Side - Search and Login/Logout */}
+
       <div className="flex items-center gap-4">
         <input
           type="text"

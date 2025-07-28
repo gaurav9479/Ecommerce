@@ -1,4 +1,4 @@
-// src/products/ProductCard.jsx
+
 import React from 'react';
 
 const ProductCard = ({ title, price, image }) => {
