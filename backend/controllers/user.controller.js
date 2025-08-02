@@ -18,7 +18,7 @@ const generateAccessAndRefreshToken=async(userId)=>{
     }
 }
 const registerUser= asyncHandler(async(req,res)=>{
-    const{Name,email,password,phone}=req.body
+    const{Name,email,password,phone,isAdmin}=req.body
     if([Name,email,password,phone].some((field)=>field?.trim()==="")){
         throw new ApiError(400,"all fields are required")
     }
@@ -32,7 +32,8 @@ const registerUser= asyncHandler(async(req,res)=>{
         Name,
         email,
         password,
-        phone
+        phone,
+        isAdmin:isAdmin||false,
     })
     const createduser=await User.findById(user._id).select(
         "-password"
@@ -46,7 +47,7 @@ const registerUser= asyncHandler(async(req,res)=>{
 
 })
 const loginUser=asyncHandler(async(req,res)=>{
-    const {email,password,phone}=req.body
+    const {email,password,phone,isAdmin}=req.body
     if((!email && !phone) || !password){
         throw new ApiError(400,"phone or email is required")
     }
@@ -59,6 +60,9 @@ const loginUser=asyncHandler(async(req,res)=>{
     const is_pass_valid=await user.isPasswordCorrect(password)
     if(!is_pass_valid){
         throw new ApiError(401,"invalid user Credential")
+    }
+    if(isAdmin && !user.isAdmin){
+        throw new ApiError(403,"you are not an admin")
     }
     const {accessToken,refreshToken}=await generateAccessAndRefreshToken(user._id)
     

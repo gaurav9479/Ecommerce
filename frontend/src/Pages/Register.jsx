@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 function Register() {
@@ -13,13 +13,14 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
       const url = "http://localhost:9000/api/v1/users/register";
-      const payload = { Name: name, email, phone, password }; 
+      const payload = { Name: name, email, phone, password,isAdmin}; 
       const res = await axios.post(url, payload, { withCredentials: true });
 
       const user = res?.data?.data;
@@ -27,7 +28,12 @@ function Register() {
         setUser(user);
         localStorage.setItem("user", JSON.stringify(user));
         toast.success(`Welcome, ${user.Name || "User"}!`);
-        navigate("/");
+        if(user.isAdmin){
+          navigate('/admin/dashboard');
+          
+        }else{
+          navigate('/')
+        }
       } else {
         toast.error("Registration failed: No user returned.");
       }
@@ -75,6 +81,15 @@ function Register() {
             className="w-full px-4 py-2 rounded-md bg-darkPlum text-white placeholder:text-gray-300"
             required
           />
+          <label className="flex items-center space-x-2 text-white">
+          <input
+            type="checkbox"
+            checked={isAdmin}
+            onChange={() => setIsAdmin(!isAdmin)}
+            className="form-checkbox text-cherryWine"
+          />
+          <span>Register as Admin</span>
+          </label>
 
           <button
             type="submit"
@@ -86,12 +101,12 @@ function Register() {
 
         <p className="text-sm text-gray-300 mt-4">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-cherryWine hover:text-white underline"
-          >
+          <Link
+              to="/login"
+              className="text-cherryWine hover:text-white underline"
+            >
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>

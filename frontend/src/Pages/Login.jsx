@@ -3,13 +3,13 @@ import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-
+import AdminDashboard from "./AdminDashboard";
 function Login() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
 
   const [isLogin, setIsLogin] = useState(true);
-
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
@@ -21,8 +21,9 @@ function Login() {
       const url = "http://localhost:9000/api/v1/users/login"
         
 
-      const payload ={ phone, password }
-
+      const payload =isLogin
+        ?{phone,password,isAdmin}
+        :{phone,password};
 
       const res = await axios.post(url, payload, { withCredentials: true });
 
@@ -35,7 +36,11 @@ function Login() {
 
 
         toast.success(`Welcome, ${user.name || "User"}!`);
-        navigate("/"); // Redirect 
+        if (isAdmin && user.isAdmin) {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
       } else {
         toast.error("Login failed: No user data");
         console.error("⚠️ Unexpected response:", res?.data);
@@ -94,6 +99,20 @@ function Login() {
             className="w-full px-4 py-2 rounded-md bg-darkPlum text-white placeholder:text-gray-300"
             required
           />
+          {isLogin && (
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="adminToggle"
+                checked={isAdmin}
+                onChange={(e) => setIsAdmin(e.target.checked)}
+                className="accent-cherryWine"
+              />
+              <label htmlFor="adminToggle" className="text-white text-sm">
+                Login as Admin
+              </label>
+            </div>
+          )}
 
           <button
             type="submit"
