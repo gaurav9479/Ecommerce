@@ -3,7 +3,7 @@ import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import AdminDashboard from "./AdminDashboard";
+import AdminDashboard from "../Admin/AdminDashboard";
 function Login() {
   const navigate = useNavigate();
   const { setUser } = useAuth();

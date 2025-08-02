@@ -5,7 +5,8 @@ import Home from './component/Home'
 import Applayout from './component/Applayout/Applayout';
 import Login from './Pages/Login'
 import Register from './Pages/Register';
-import AdminDashboard from './Pages/AdminDashboard';
+import AdminLayout from './Admin/adminlayout';
+import AdminDashboard from './Admin/AdminDashboard';
 
 const router = createBrowserRouter([
   {
@@ -29,11 +30,16 @@ const router = createBrowserRouter([
     ],
     
   },
-  {
-    path:'/admin/dashboard',
-    element:<AdminDashboard/>,
+    {
+    path: '/admin',
+    element: <AdminLayout />, // Admin layout with admin navbar
     children: [
-      { index: true, element: <AdminDashboard /> }
+      {
+        path: 'dashboard',
+        element: <AdminDashboard />
+      },
+      
+      // Future: Add more admin routes like users, products, etc.
     ]
   }
   
