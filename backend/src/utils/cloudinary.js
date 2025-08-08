@@ -15,11 +15,12 @@ export const uploadOnCloudinary = async (localFilePath) => {
 
     const result = await cloudinary.uploader.upload(localFilePath, {
       folder: "ecommerce-products"
+      
     });
 
     fs.unlinkSync(localFilePath); // delete after upload
 
-    return result;
+    return result.secure_url;
   } catch (error) {
     console.error("❌ Cloudinary Upload Error:", error); // <-- show actual error
     return null;
