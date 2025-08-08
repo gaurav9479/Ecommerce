@@ -71,14 +71,9 @@ const userSchema=new Schema(
             // }
 
         //},
-        cart:{type:Object,default:{}},
+
         
-        orders: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Order'
-            }
-        ],
+
         isAdmin: {
             type: Boolean,
             default: false
