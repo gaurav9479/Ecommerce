@@ -15,6 +15,16 @@ const generateAccessAndRefreshToken = async (userId) => {
   await user.save({ validateBeforeSave: false });
   return { accessToken, refreshToken };
 };
+export const getAllProducts =async(req,res)=>{
+  try {
+    const products=await Product.find();
+    res.status(200).json(new ApiResponse(200, products, "Products fetched successfully"));  
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(new ApiError(500, "Internal Server Error")); 
+  }
+
+};
 const loginAdmin = asyncHandler(async (req, res) => {
   const { phone, password } = req.body;
   if (!phone || !password) {

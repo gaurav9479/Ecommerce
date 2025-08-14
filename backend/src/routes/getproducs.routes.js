@@ -1,9 +1,5 @@
-import express from "express"
-router.get('/get-products', async (req, res) => {
-  try {
-    const products = await productModel.find();
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch products' });
-  }
-});
+import express from 'express';
+import { getAllProducts } from '../controllers/admin.controller.js';
+const router = express.Router();
+router.get('/products', getAllProducts);
+export default router;

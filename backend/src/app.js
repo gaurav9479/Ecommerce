@@ -15,10 +15,11 @@ app.use(cookierParser())
 
 import userRoutes from "./routes/user.routes.js"
 import adminRoutes from "./routes/admin.routes.js"
-
+import { getAllProducts } from "./controllers/admin.controller.js"
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.get("/api/v1/products", getAllProducts);
 
 export {app}
 
