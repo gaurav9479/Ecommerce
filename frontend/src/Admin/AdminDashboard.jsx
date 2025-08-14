@@ -1,9 +1,10 @@
-import AdminProductForm from "./AdminProductForm";
+import AddProductForm from "./AdminProductForm";
 
 
 function AdminDashboard() {
   return (
-    <AdminProductForm/>
+    <>
+    </>
   );
 }
 export default AdminDashboard;

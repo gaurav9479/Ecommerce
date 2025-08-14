@@ -1,11 +1,12 @@
 import express from 'express';
-import { addProduct } from '../controllers/admin.controller.js'; // make sure path is correct
-import upload from '../middlewares/multer.middleware.js'; // if you're using multer
+import { addProduct } from '../controllers/admin.controller.js';
+import { upload } from '../middlewares/multer.middleware.js'; 
+import { loginAdmin } from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
-// Multer uploads 'images' field for multiple images
-router.post('/add-product', upload.array('images', 5), addProduct);
+router.post('/login', loginAdmin);
+router.post('/products', upload.array('images', 5), addProduct);
 
 
 export default router;

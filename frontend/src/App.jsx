@@ -7,6 +7,7 @@ import Login from './Pages/Login'
 import Register from './Pages/Register';
 import AdminLayout from './Admin/adminlayout';
 import AdminDashboard from './Admin/AdminDashboard';
+import AdminProductForm from './Admin/AdminProductForm';
 
 const router = createBrowserRouter([
   {
@@ -38,8 +39,12 @@ const router = createBrowserRouter([
         path: 'dashboard',
         element: <AdminDashboard />
       },
+      {
+        path: 'products',
+        element: <AdminProductForm />
+      }
       
-      // Future: Add more admin routes like users, products, etc.
+
     ]
   }
   

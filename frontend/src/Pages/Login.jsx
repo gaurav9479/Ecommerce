@@ -3,7 +3,7 @@ import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import AdminDashboard from "../Admin/AdminDashboard";
+
 function Login() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
@@ -18,28 +18,31 @@ function Login() {
     e.preventDefault();
 
     try {
-      const url = "http://localhost:9000/api/v1/users/login"
-        
+      const url = isAdmin?"http://localhost:9000/api/v1/admin/login":"http://localhost:9000/api/v1/users/login";
 
-      const payload =isLogin
-        ?{phone,password,isAdmin}
-        :{phone,password};
+      const payload = {
+        phone,
+        password,
+        isAdmin,
+      };
 
       const res = await axios.post(url, payload, { withCredentials: true });
 
       const user = res?.data?.data?.user;
 
       if (user) {
-        // Update context + localStorage
+
         setUser(user);
         localStorage.setItem("user", JSON.stringify(user));
 
 
-        toast.success(`Welcome, ${user.name || "User"}!`);
+        toast.success(`Welcome, ${user.Name || "User"}!`);
         if (isAdmin && user.isAdmin) {
           navigate("/admin/dashboard");
-        } else {
+        } else if (!isAdmin && !user.isAdmin) {
           navigate("/");
+        }else{
+          toast.error("Login failed: admin cant login here");
         }
       } else {
         toast.error("Login failed: No user data");

@@ -13,11 +13,12 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"))
 app.use(cookierParser())
 
-import userRoutes from "./routes/user.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
+import userRoutes from "./routes/user.routes.js"
+import adminRoutes from "./routes/admin.routes.js"
+
 
 app.use("/api/v1/users", userRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 export {app}
 
