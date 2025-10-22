@@ -7,34 +7,6 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-// 👑 Admin: Fetch all users
-export const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find().select("-password -refreshToken");
-  return res.status(200).json(new ApiResponse(200, users, "All users fetched successfully"));
-});
-
-// 👑 Admin: Fetch a specific user by ID
-export const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password -refreshToken");
-  if (!user) throw new ApiError(404, "User not found");
-  return res.status(200).json(new ApiResponse(200, user, "User fetched successfully"));
-});
-
-// 👑 Admin: Deactivate a user (soft delete)
-export const deactivateUser = asyncHandler(async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
-  if (!user) throw new ApiError(404, "User not found");
-  return res.status(200).json(new ApiResponse(200, user, "User deactivated successfully"));
-});
-
-// 👑 Admin: Restore a deactivated user
-export const restoreUser = asyncHandler(async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, { isDeleted: false }, { new: true });
-  if (!user) throw new ApiError(404, "User not found");
-  return res.status(200).json(new ApiResponse(200, user, "User restored successfully"));
-});
-
-
 const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findById(userId);
   const accessToken = user.generateAccessToken();
@@ -43,18 +15,16 @@ const generateAccessAndRefreshToken = async (userId) => {
   await user.save({ validateBeforeSave: false });
   return { accessToken, refreshToken };
 };
-
-export const getAllProducts =async(req,res)=>{
+export const getAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products=await Product.find();
-    res.status(200).json(new ApiResponse(200, products, "Products fetched successfully"));  
+    const products = await Product.find();
+    res.status(200).json(new ApiResponse(200, products, "Products fetched successfully"));
   } catch (err) {
     console.error(err);
     res.status(500).json(new ApiError(500, "Internal Server Error")); 
   }
 
-};
-
+});
 const loginAdmin = asyncHandler(async (req, res) => {
   const { phone, password } = req.body;
   if (!phone || !password) {
@@ -75,8 +45,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid credentials");
   }
 
-  // Generate tokens, set cookies, etc.
-  // (Use your existing generateAccessAndRefreshToken helper)
+  
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
 
@@ -96,7 +65,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
 
 
 
-export const addProduct = async (req, res) => {
+export const addProduct = asyncHandler(async (req, res) => {
   try {
     const { title, price, description,category} = req.body;
      console.log("Files received:", req.files);
@@ -122,5 +91,5 @@ export const addProduct = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Upload failed" });
   }
-};
+});
 export { loginAdmin };
