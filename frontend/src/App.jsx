@@ -1,58 +1,31 @@
-// src/App.jsx
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './component/Home'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PrivateRoute, AdminRoute, RetailerRoute } from "./Routes/ProtectedRoutes";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Home from "./component/Home";
+import AdminDashboard from "./Admin/AdminDashboard";
 
-import Applayout from './component/Applayout/Applayout';
-import Login from './Pages/Login'
-import Register from './Pages/Register';
-import AdminLayout from './Admin/adminlayout';
-import AdminDashboard from './Admin/AdminDashboard';
-import AdminProductForm from './Admin/AdminProductForm';
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Applayout />,
-    children: [
-      {
-        index: true,
-        element: <Home />
-      },
-      {
-      path: 'login',
-      element: <Login />
-      },
-      {
-        path:'register',
-        element:<Register/>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-      },
-      
-    ],
-    
-  },
-    {
-    path: '/admin',
-    element: <AdminLayout />, // Admin layout with admin navbar
-    children: [
-      {
-        path: 'dashboard',
-        element: <AdminDashboard />
-      },
-      {
-        path: 'products',
-        element: <AdminProductForm />
-      }
-      
+        <Route element={<PrivateRoute />}>
+          <Route path="/dashboard" element={<div>User Dashboard</div>} />
+        </Route>
 
-    ]
-  }
-  
-]
-);
+        <Route element={<AdminRoute />}>
+          <Route path="/admin/*" element={<AdminDashboard />} />
+        </Route>
 
-function App() {
-  return <RouterProvider router={router} />
+        <Route element={<RetailerRoute />}>
+          <Route path="/retailer/*" element={<div>Retailer Panel</div>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App;
