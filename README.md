@@ -91,3 +91,13 @@ Full‑stack ecommerce application with a Node.js/Express/MongoDB backend and a 
 - Cart, orders, payments integration.
 - Reviews/ratings, categories, filters, search.
 - Admin analytics dashboard, inventory management.
+
+## Key Auth & Platform Strategy
+
+- ✅ **Dual-token auth (access + refresh)**: Short-lived access tokens and longer-lived refresh tokens; refresh flow provided, tokens rotated and stored server-side for revocation.
+- ✅ **Role-based structure (user, retailer, admin)**: Controllers and routes structured to support multiple roles; guards can be extended to enforce role checks.
+- ✅ **Soft delete & restore system**: Designed to support soft deletions via flags/timestamps to allow safe restore without data loss.
+- ✅ **Email + phone login**: User model and controllers support both email and phone credentials for flexible authentication flows.
+- ✅ **Cookie-secured JWTs**: Tokens issued in HTTP-only cookies to reduce XSS exposure; headers supported for service-to-service.
+- ✅ **Modular async error/response management**: Centralized `ApiError`, `ApiResponse`, and `asyncHandler` utilities for predictable error and response handling.
+- ✅ **Ready for future OTP verification & retailer dashboard**: OTP controller/model scaffolding and admin/retailer layout prepared for future feature expansion.
