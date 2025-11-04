@@ -7,6 +7,34 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
+// 👑 Admin: Fetch all users
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find().select("-password -refreshToken");
+  return res.status(200).json(new ApiResponse(200, users, "All users fetched successfully"));
+});
+
+// 👑 Admin: Fetch a specific user by ID
+export const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password -refreshToken");
+  if (!user) throw new ApiError(404, "User not found");
+  return res.status(200).json(new ApiResponse(200, user, "User fetched successfully"));
+});
+
+// 👑 Admin: Deactivate a user (soft delete)
+export const deactivateUser = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+  if (!user) throw new ApiError(404, "User not found");
+  return res.status(200).json(new ApiResponse(200, user, "User deactivated successfully"));
+});
+
+// 👑 Admin: Restore a deactivated user
+export const restoreUser = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, { isDeleted: false }, { new: true });
+  if (!user) throw new ApiError(404, "User not found");
+  return res.status(200).json(new ApiResponse(200, user, "User restored successfully"));
+});
+
+
 const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findById(userId);
   const accessToken = user.generateAccessToken();
@@ -15,6 +43,7 @@ const generateAccessAndRefreshToken = async (userId) => {
   await user.save({ validateBeforeSave: false });
   return { accessToken, refreshToken };
 };
+
 export const getAllProducts =async(req,res)=>{
   try {
     const products=await Product.find();
@@ -25,6 +54,7 @@ export const getAllProducts =async(req,res)=>{
   }
 
 };
+
 const loginAdmin = asyncHandler(async (req, res) => {
   const { phone, password } = req.body;
   if (!phone || !password) {
