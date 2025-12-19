@@ -6,6 +6,7 @@ export default function AdminProductForm() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [stock, setStock] = useState("");
   const [images, setImages] = useState([]);
 
   const handleImageChange = (e) => {
@@ -20,13 +21,17 @@ export default function AdminProductForm() {
     formData.append("price", price);
     formData.append("description", description);
     formData.append("category", category);
+    formData.append("stock", stock);
 
     images.forEach((img) => {
       formData.append("images", img);
     });
 
     try {
-      await axios.post("http://localhost:9000/api/admin/products", formData);
+      await axios.post("/api/v1/admin/ADD-products", formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true 
+      });
       alert("✅ Product added successfully!");
     } catch (error) {
       console.error(error);
@@ -60,6 +65,16 @@ export default function AdminProductForm() {
           type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
+          className="w-full p-2 rounded-md bg-darkPlum text-white outline-none mb-4"
+          required
+        />
+
+        {/* Stock */}
+        <label className="block text-white mb-2">Stock</label>
+        <input
+          type="number"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
           className="w-full p-2 rounded-md bg-darkPlum text-white outline-none mb-4"
           required
         />

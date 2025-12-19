@@ -32,7 +32,7 @@ const ProductList = ({ count = 12 }) => {
           image={Array.isArray(product.image) ?
             product.image[0] : product.image
           }
-          
+          productId={product._id}
           />
         ))}
       </div>

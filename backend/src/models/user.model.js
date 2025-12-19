@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema(
             enum: ["user", "retailer", "admin"],
             default: "user",
         },
+        vendorCode: {
+            type: String,
+            unique: true,
+            sparse: true
+        },
         shopDetails: {
             shopName: String,
             gstNumber: String,

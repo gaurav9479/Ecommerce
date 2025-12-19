@@ -21,13 +21,19 @@ const AdminNavbar = () => {
           <Link to="/admin/dashboard" className="hover:text-yellow-400">Dashboard</Link>
         </li>
         <li>
-          <Link to="/admin/products" className="hover:text-yellow-400">PRODUCTS</Link>
+          <Link to="/admin/products" className="hover:text-yellow-400">My Products</Link>
         </li>
         <li>
           <Link to="/admin/products" className="hover:text-yellow-400">ADD PRODUCT</Link>
         </li>
         <li>
           <Link to="/admin/orders" className="hover:text-yellow-400">Orders</Link>
+        </li>
+        <li>
+          <Link to="/admin/login" className="hover:text-yellow-400">Login</Link>
+        </li>
+        <li>
+          <Link to="/admin/register" className="hover:text-yellow-400">Register</Link>
         </li>
         <li>
           <button

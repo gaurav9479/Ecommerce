@@ -1,12 +1,18 @@
 import express from 'express';
 import { addProduct, getAllProducts } from '../controllers/admin.controller.js';
-import { upload } from '../middlewares/multer.middleware.js'; 
+import { upload } from '../middlewares/multer.middleware.js';
 import { loginAdmin } from '../controllers/admin.controller.js';
+
+import { verifyJWT } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
 router.post('/login', loginAdmin);
-router.post('/ADD-products', addProduct);
-router.get('/products', getAllProducts);
+router.post('/register', registerAdmin);
+
+// Secured routes
+router.route('/ADD-products').post(verifyJWT, upload.array("images", 10), addProduct);
+router.route('/products').get(getAllProducts); // Public or secured? Keeping public as per checking
+router.route('/my-products').get(verifyJWT, getAdminProducts);
 
 export default router;
