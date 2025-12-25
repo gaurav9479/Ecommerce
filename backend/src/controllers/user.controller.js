@@ -133,7 +133,14 @@ export const restoreUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { accessToken, refreshToken, user }, "Account restored successfully"));
 });
 
-// 🔧 Change Password
+// 👤 Get Current User
+export const getCurrentUser = asyncHandler(async (req, res) => {
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { user: req.user }, "Current user fetched successfully"));
+});
+
+// wrench Change Password
 export const changeCurrentPassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword } = req.body;
     const user = await User.findById(req.user._id).select("+password");

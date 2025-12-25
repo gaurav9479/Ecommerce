@@ -73,9 +73,9 @@ export const addProduct = asyncHandler(async (req, res) => {
     const images = [];
 
     for (const file of req.files) {
-      const uploaded = await uploadOnCloudinary(file.path);
-      console.log("Cloudinary response:", uploaded);
-      if (uploaded?.url) images.push(uploaded.url);
+      const uploadedUrl = await uploadOnCloudinary(file.path);
+      console.log("Cloudinary response:", uploadedUrl);
+      if (uploadedUrl) images.push(uploadedUrl);
     }
 
     const newProduct = await Product.create({
@@ -139,4 +139,39 @@ const getAdminProducts = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, products, "Admin products fetched successfully"));
 });
 
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find().select("-password -refreshToken");
+  return res.status(200).json(new ApiResponse(200, users, "Users fetched successfully"));
+});
+
+export const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password -refreshToken");
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  return res.status(200).json(new ApiResponse(200, user, "User fetched successfully"));
+});
+
+export const deactivateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  user.isDeleted = true;
+  await user.save();
+  return res.status(200).json(new ApiResponse(200, user, "User deactivated successfully"));
+});
+
+export const restoreUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  user.isDeleted = false;
+  await user.save();
+  return res.status(200).json(new ApiResponse(200, user, "User restored successfully"));
+});
+
 export { loginAdmin, registerAdmin, getAdminProducts };
+
