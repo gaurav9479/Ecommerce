@@ -7,6 +7,7 @@ import {
     changeCurrentPassword,
     deleteUser,
     restoreUser,
+    getCurrentUser
 } from "../controllers/user.controller.js";
 import { verifyJWT, authorizeRoles } from "../middlewares/auth.middleware.js";
 import {
@@ -26,6 +27,7 @@ router.post("/logout", verifyJWT, logoutUser);
 router.post("/change-password", verifyJWT, changeCurrentPassword);
 router.delete("/delete", verifyJWT, deleteUser);
 router.post("/restore", restoreUser);
+router.get("/me", verifyJWT, getCurrentUser);
 
 // Admin controls
 router.get("/admin/users", verifyJWT, authorizeRoles("admin"), getAllUsers);

@@ -1,13 +1,8 @@
 import express from "express";
-import {
-    sendOTP,
-    verifyOTP,
-} from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
-// OTP-based login routes
-router.post("/send-otp", sendOTP);
-router.post("/verify-otp", verifyOTP);
+// Auth routes are now handled in user.routes.js (/users/login, /users/register)
+// This file is kept for potential future auth-specific routes (e.g., password reset)
 
 export default router;

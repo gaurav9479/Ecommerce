@@ -13,8 +13,51 @@ const productSchema = new mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
+    },
+    rating: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5
+    },
+    numReviews: {
+        type: Number,
+        default: 0
+    },
+    tags: {
+        type: [String],
+        default: []
+    },
+    featured: {
+        type: Boolean,
+        default: false
+    }
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } })
+
+// Virtual field for reviews
+productSchema.virtual('reviews', {
+    ref: 'Review',
+    localField: '_id',
+    foreignField: 'product'
+});
+
+// Method to update average rating
+productSchema.methods.updateRating = async function () {
+    const Review = mongoose.model('Review');
+    const stats = await Review.aggregate([
+        { $match: { product: this._id } },
+        { $group: { _id: null, avgRating: { $avg: '$rating' }, count: { $sum: 1 } } }
+    ]);
+
+    if (stats.length > 0) {
+        this.rating = Math.round(stats[0].avgRating * 10) / 10;
+        this.numReviews = stats[0].count;
+    } else {
+        this.rating = 0;
+        this.numReviews = 0;
     }
 
-}, { timestamps: true })
+    await this.save();
+};
 
 export const Product = mongoose.model("product", productSchema)

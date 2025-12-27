@@ -6,12 +6,16 @@ import {
     deleteProduct,
     getAllProducts,
     getMyProducts,
+    getProductById,
+    getFeaturedProducts
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
 
-// Public
+// Public routes
 router.get("/", getAllProducts);
+router.get("/featured", getFeaturedProducts);
+router.get("/:id", getProductById);
 
 // Retailer-only routes
 router.post("/", verifyJWT, authorizeRoles("retailer"), createProduct);
