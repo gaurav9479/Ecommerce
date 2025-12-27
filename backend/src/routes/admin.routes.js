@@ -1,7 +1,6 @@
 import express from 'express';
-import { addProduct, getAllProducts } from '../controllers/admin.controller.js';
+import { addProduct, getAllProducts, registerAdmin, loginAdmin, getAdminProducts } from '../controllers/admin.controller.js';
 import { upload } from '../middlewares/multer.middleware.js';
-import { loginAdmin } from '../controllers/admin.controller.js';
 
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 
