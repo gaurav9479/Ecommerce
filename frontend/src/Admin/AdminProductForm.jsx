@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 export default function AdminProductForm() {
   const [title, setTitle] = useState("");
@@ -8,6 +10,8 @@ export default function AdminProductForm() {
   const [category, setCategory] = useState("");
   const [stock, setStock] = useState("");
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     setImages([...e.target.files]);
@@ -15,6 +19,11 @@ export default function AdminProductForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!images.length) {
+      toast.error("Please select at least one image");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", title);
@@ -27,15 +36,23 @@ export default function AdminProductForm() {
       formData.append("images", img);
     });
 
+    setLoading(true);
     try {
-      await axios.post("/api/v1/admin/ADD-products", formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        withCredentials: true 
-      });
-      alert("✅ Product added successfully!");
+      await axios.post(
+        `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/admin/ADD-products`, 
+        formData, 
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          withCredentials: true 
+        }
+      );
+      toast.success("Product added successfully!");
+      navigate("/admin/dashboard");
     } catch (error) {
       console.error(error);
-      alert("❌ Failed to add product");
+      toast.error(error?.response?.data?.message || "Failed to add product");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -118,9 +135,14 @@ export default function AdminProductForm() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-cherryWine hover:bg-crimsonPlum text-white p-3 rounded-md font-semibold"
+          disabled={loading}
+          className={`w-full p-3 rounded-md font-semibold transition ${
+            loading 
+              ? "bg-gray-600 cursor-not-allowed" 
+              : "bg-cherryWine hover:bg-crimsonPlum text-white"
+          }`}
         >
-          Add Product
+          {loading ? "Adding Product..." : "Add Product"}
         </button>
       </form>
     </div>

@@ -1,23 +1,23 @@
-// src/App.jsx
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './component/Home'
-
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Applayout from './component/Applayout/Applayout';
-import Login from './Pages/Login'
+import Home from './component/Home';
+import Login from './Pages/Login';
 import Register from './Pages/Register';
+import Shop from './Pages/Shop';
+import ProductDetail from './Pages/ProductDetail';
+import Cart from './Pages/Cart';
+import Payment from './Pages/Payment';
 import AdminLayout from './Admin/adminlayout';
 import AdminDashboard from './Admin/AdminDashboard';
 import AdminLogin from './Admin/AdminLogin';
 import AdminRegister from './Admin/AdminRegister';
-import Cart from './Pages/Cart';
-import Payment from './Pages/Payment';
+import AdminProductForm from './Admin/AdminProductForm';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Applayout />,
     children: [
-      // ... (existing routes)
       {
         index: true,
         element: <Home />
@@ -31,20 +31,26 @@ const router = createBrowserRouter([
         element: <Register />
       },
       {
+        path: 'products',
+        element: <Shop />
+      },
+      {
+        path: 'product/:id',
+        element: <ProductDetail />
+      },
+      {
         path: 'cart',
         element: <Cart />
       },
       {
         path: 'payment',
         element: <Payment />
-      },
-
-    ],
-
+      }
+    ]
   },
   {
     path: '/admin',
-    element: <AdminLayout />, // Admin layout with admin navbar
+    element: <AdminLayout />,
     children: [
       {
         path: 'login',
@@ -64,13 +70,10 @@ const router = createBrowserRouter([
       }
     ]
   }
-
-  
-]
-);
+]);
 
 function App() {
-  return <RouterProvider router={router} />
+  return <RouterProvider router={router} />;
 }
 
 export default App;

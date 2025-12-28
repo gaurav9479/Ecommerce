@@ -1,7 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
-import dotenv from 'dotenv';
-dotenv.config()
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,7 +13,7 @@ export const uploadOnCloudinary = async (localFilePath) => {
 
     const result = await cloudinary.uploader.upload(localFilePath, {
       folder: "ecommerce-products"
-      
+
     });
 
     fs.unlinkSync(localFilePath); // delete after upload
