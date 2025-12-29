@@ -8,7 +8,7 @@ const Footer = () => {
 
 
         <div>
-          <h2 className="text-2xl font-bold text-cherryWine mb-2">GLIPKart</h2>
+          <h2 className="text-2xl font-bold text-cherryWine mb-2">GLIPKART</h2>
           <p className="text-sm text-gray-300">
             Your one-stop shop for electronics, fashion, and more. Quality products at the best prices.
           </p>
@@ -49,7 +49,7 @@ const Footer = () => {
 
 
       <div className="mt-10 border-t border-gray-700 pt-4 text-center text-sm text-gray-400">
-        © {new Date().getFullYear()} GLIPKart. All rights reserved.
+        © {new Date().getFullYear()} GLIPKART. All rights reserved.
       </div>
     </footer>
   );
