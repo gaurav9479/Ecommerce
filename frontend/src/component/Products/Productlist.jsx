@@ -1,39 +1,64 @@
-// src/products/ProductList.jsx
 import React, { useEffect, useState } from 'react';
-
-import ProductCard from './ProductCard';
 import axios from 'axios';
+import ProductCard from './ProductCard';
+import LoadingSkeleton from '../LoadingSkeleton';
 
-const ProductList = ({ count = 12 }) => {
+const ProductList = ({ count = 12, featured = false, title = "Our Products" }) => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:9000/api/v1/products")
-      .then((res) => {
-        if (Array.isArray(res.data.data)) {
-          setProducts(res.data.data.slice(0, count));
-        } else {
-          console.error("Unexpected products format:", res.data);
-        }
-      })
-      .catch((err) => console.error("Error fetching products:", err));
-  }, [count]);
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const endpoint = featured 
+          ? `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/products/featured?limit=${count}`
+          : `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/products?limit=${count}`;
+        
+        const response = await axios.get(endpoint);
+        
+        // Handle both direct array and paginated response
+        const productData = response.data.data.products || response.data.data;
+        setProducts(Array.isArray(productData) ? productData : []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [count, featured]);
+
+  if (loading) {
+    return (
+      <div className="container-custom section-padding">
+        <h2 className="text-3xl font-bold gradient-text mb-8">{title}</h2>
+        <div className="grid-auto-fit">
+          <LoadingSkeleton variant="product" count={count} />
+        </div>
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="container-custom section-padding text-center">
+        <h2 className="text-3xl font-bold gradient-text mb-8">{title}</h2>
+        <p className="text-slate-400 text-lg">No products available at the moment.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 bg-midnightBlack min-h-screen">
-      <h2 className="text-2xl text-white mb-6 font-bold">Our Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="container-custom section-padding">
+      <h2 className="text-3xl font-bold gradient-text mb-8 animate-slideUp">{title}</h2>
+      <div className="grid-auto-fit">
         {products.map((product, index) => (
-          <ProductCard
-          key={product._id || index}
-          title={product.title}
-          price={product.price}
-          image={Array.isArray(product.image) ?
-            product.image[0] : product.image
-          }
-          productId={product._id}
-          />
+          <div key={product._id || index} className="animate-fadeIn" style={{ animationDelay: `${index * 0.1}s` }}>
+            <ProductCard product={product} />
+          </div>
         ))}
       </div>
     </div>

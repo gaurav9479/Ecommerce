@@ -14,22 +14,18 @@ function Register() {
     email: "",
     phone: "",
     password: "",
-    isAdmin: false,
   });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm({
-      ...form,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const { name, email, phone, password, isAdmin } = form;
+    const { name, email, phone, password } = form;
 
     if (!name || !email || !phone || !password) {
       toast.error("All fields are required.");
@@ -40,18 +36,17 @@ function Register() {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/users/register`,
-        { Name: name, email, phone, password, isAdmin },
+        { name, email, phone, password, role: "user" },
         { withCredentials: true }
       );
 
-      const user = res?.data?.data;
+      const user = res?.data?.data?.user;
       if (!user) throw new Error("No user returned from API");
 
       setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
-      toast.success(`Welcome, ${user.Name || "User"}!`);
-
-      navigate(user.isAdmin ? "/admin/dashboard" : "/");
+      toast.success(`Welcome, ${user.name || "User"}!`);
+      navigate("/");
     } catch (err) {
       const msg = err?.response?.data?.message || "Registration failed.";
       toast.error(msg);
@@ -107,17 +102,6 @@ function Register() {
             required
           />
 
-          <label className="flex items-center space-x-2 text-white">
-            <input
-              type="checkbox"
-              name="isAdmin"
-              checked={form.isAdmin}
-              onChange={handleChange}
-              className="form-checkbox accent-cherryWine"
-            />
-            <span>Register as Admin</span>
-          </label>
-
           <button
             type="submit"
             disabled={loading}
@@ -140,6 +124,16 @@ function Register() {
             Login
           </Link>
         </p>
+
+        <div className="mt-6 pt-4 border-t border-gray-600 text-center">
+          <p className="text-gray-400 text-sm">Want to sell on GLIPKART?</p>
+          <Link
+            to="/admin/register"
+            className="text-yellow-400 hover:text-yellow-300 font-medium"
+          >
+            Become a Vendor →
+          </Link>
+        </div>
       </div>
     </div>
   );

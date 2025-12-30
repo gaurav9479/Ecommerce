@@ -13,7 +13,10 @@ const Cart = () => {
 
     const fetchCart = async () => {
         try {
-            const { data } = await axios.get('/api/v1/cart', { withCredentials: true });
+            const { data } = await axios.get(
+                `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/cart`, 
+                { withCredentials: true }
+            );
             setCart(data.data);
             setLoading(false);
         } catch (error) {
@@ -24,7 +27,10 @@ const Cart = () => {
 
     const removeFromCart = async (productId) => {
         try {
-            await axios.delete(`/api/v1/cart/remove/${productId}`, { withCredentials: true });
+            await axios.delete(
+                `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/cart/remove/${productId}`, 
+                { withCredentials: true }
+            );
             fetchCart(); // Refresh cart
         } catch (error) {
             console.error("Error removing item", error);

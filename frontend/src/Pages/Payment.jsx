@@ -38,7 +38,7 @@ const CheckoutForm = ({ clientSecret, amount }) => {
             try {
                 // Assuming address is collected here or handled. For simplified flow, hardcoding default address or just creating order.
                 // ideally, we should have shipping address form here too.
-                await axios.post('/api/v1/orders/create', {
+                await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/orders/create`, {
                     shippingAddress: "123 Main St, Default City", // Simplified
                     paymentMethod: "Stripe",
                     totalAmount: amount
@@ -79,7 +79,7 @@ const Payment = () => {
 
     useEffect(() => {
         // Create PaymentIntent as soon as the page loads
-        axios.post("/api/v1/payment/create-payment-intent", {}, { withCredentials: true })
+        axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/payment/create-payment-intent`, {}, { withCredentials: true })
             .then((res) => {
                 setClientSecret(res.data.data.clientSecret);
                 setAmount(res.data.data.amount);

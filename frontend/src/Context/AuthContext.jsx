@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     (async () => {
       try {
         const { data } = await api.get("/users/me");
-        setUser(data.user);
+        setUser(data.data.user);
       } catch {
         setUser(null);
       } finally {
@@ -25,9 +25,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const { data } = await api.post("/users/login", { email, password });
-      setUser(data.user);
-      toast.success(`Welcome back, ${data.user.name || "user"}!`);
-      return data.user;
+      setUser(data.data.user);
+      toast.success(`Welcome back, ${data.data.user.name || "user"}!`);
+      return data.data.user;
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
       throw err;
