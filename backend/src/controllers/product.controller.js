@@ -13,7 +13,8 @@ export const createProduct = asyncHandler(async (req, res) => {
         description,
         category,
         imageUrl,
-        retailerId: req.user._id,
+        imageUrl,
+        owner: req.user._id,
     });
 
     res.status(201).json(new ApiResponse(201, product, "Product created successfully"));
@@ -25,7 +26,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     if (!product) throw new ApiError(404, "Product not found");
 
     // Ownership check
-    if (req.user.role !== "admin" && product.retailerId.toString() !== req.user._id.toString()) {
+    if (req.user.role !== "admin" && product.owner.toString() !== req.user._id.toString()) {
         throw new ApiError(403, "You can only modify your own products");
     }
 
@@ -40,7 +41,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) throw new ApiError(404, "Product not found");
 
-    if (req.user.role !== "admin" && product.retailerId.toString() !== req.user._id.toString()) {
+    if (req.user.role !== "admin" && product.owner.toString() !== req.user._id.toString()) {
         throw new ApiError(403, "You can only delete your own products");
     }
 
@@ -95,7 +96,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 
     // Fetch products with filters
     const products = await Product.find(filter)
-        .populate("owner", "Name email")
+        .populate("owner", "name email")
         .sort(sort)
         .limit(Number(limit))
         .skip(skip);
@@ -116,17 +117,17 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 
 // 🧩 Get retailer's own products
 export const getMyProducts = asyncHandler(async (req, res) => {
-    const products = await Product.find({ retailerId: req.user._id });
+    const products = await Product.find({ owner: req.user._id });
     res.status(200).json(new ApiResponse(200, products, "Your products fetched"));
 });
 
 // 🧩 Get product by ID with reviews populated
 export const getProductById = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
-        .populate('owner', 'Name email')
+        .populate('owner', 'name email')
         .populate({
             path: 'reviews',
-            populate: { path: 'user', select: 'Name email' },
+            populate: { path: 'user', select: 'name email' },
             options: { sort: { createdAt: -1 } }
         });
 

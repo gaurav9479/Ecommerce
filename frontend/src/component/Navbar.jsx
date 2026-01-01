@@ -92,6 +92,13 @@ const Navbar = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-4">
+            {/* Wishlist */}
+            <Link to="/wishlist" className="p-2 hover:scale-110 transition-transform">
+              <svg className="w-6 h-6 text-white hover:text-pink-500 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </Link>
+
             {/* Cart */}
             <Link to="/cart" className="relative p-2 hover:scale-110 transition-transform">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -161,6 +168,7 @@ const Navbar = () => {
             </form>
             <Link to="/" className="block text-slate-300 hover:text-white py-2">Home</Link>
             <Link to="/products" className="block text-slate-300 hover:text-white py-2">Shop</Link>
+            <Link to="/wishlist" className="block text-slate-300 hover:text-white py-2">Wishlist</Link>
             {user && (
               <Link to="/dashboard" className="block text-slate-300 hover:text-white py-2">Dashboard</Link>
             )}

@@ -7,6 +7,7 @@ import Shop from './Pages/Shop';
 import ProductDetail from './Pages/ProductDetail';
 import Cart from './Pages/Cart';
 import Payment from './Pages/Payment';
+import Wishlist from './Pages/Wishlist';
 import AdminLayout from './Admin/adminlayout';
 import AdminDashboard from './Admin/AdminDashboard';
 import AdminLogin from './Admin/AdminLogin';
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: 'payment',
         element: <Payment />
+      },
+      {
+        path: 'wishlist',
+        element: <Wishlist />
       }
     ]
   },

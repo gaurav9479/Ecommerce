@@ -84,7 +84,7 @@ const AdminLogin = () => {
         <div className="text-center mt-6 space-y-2">
           <p className="text-gray-400">
             Want to become a vendor?{" "}
-            <Link to="/register" className="text-yellow-400 hover:underline">
+            <Link to="/admin/register" className="text-yellow-400 hover:underline">
               Register here
             </Link>
           </p>

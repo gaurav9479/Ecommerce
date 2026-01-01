@@ -4,6 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import StarRating from '../component/StarRating';
 import LoadingSkeleton from '../component/LoadingSkeleton';
+import AddReview from '../component/Products/AddReview';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -147,10 +148,22 @@ const ProductDetail = () => {
             )}
 
             <div className="glass rounded-xl p-6 space-y-3">
+              {product.owner && (
+                 <div className="flex items-center gap-3 text-white border-b border-slate-700 pb-3 mb-3">
+                    <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center font-bold text-lg">
+                      {product.owner.name?.[0] || 'S'}
+                    </div>
+                    <div>
+                      <p className="text-sm text-slate-400">Sold by</p>
+                      <p className="font-semibold text-lg">{product.owner.name}</p>
+                    </div>
+                 </div>
+              )}
+
               <div className="flex items-center gap-3 text-slate-300">
                 <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+               </svg>
                 <span>Free Shipping on orders above ₹500</span>
               </div>
               <div className="flex items-center gap-3 text-slate-300">
@@ -211,16 +224,17 @@ const ProductDetail = () => {
             )}
             {activeTab === 'reviews' && (
               <div className="space-y-6">
+                <AddReview productId={id} onReviewAdded={fetchProduct} />
                 {product.reviews && product.reviews.length > 0 ? (
                   product.reviews.map((review) => (
                     <div key={review._id} className="glass rounded-lg p-6">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-full gradient-bg flex items-center justify-center text-white font-bold">
-                          {review.user?.Name?.[0] || 'U'}
+                          {review.user?.name?.[0] || 'U'}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <span className="font-semibold text-white">{review.user?.Name || 'Anonymous'}</span>
+                            <span className="font-semibold text-white">{review.user?.name || 'Anonymous'}</span>
                             <StarRating rating={review.rating} size="sm" />
                           </div>
                           <p className="text-slate-300 mb-2">{review.comment}</p>

@@ -36,7 +36,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User does not exist");
   }
 
-  if (!user.isAdmin) {
+  if (user.role !== "admin") {
     throw new ApiError(403, "Only admins can login here");
   }
 
@@ -96,7 +96,7 @@ export const addProduct = asyncHandler(async (req, res) => {
 });
 
 const registerAdmin = asyncHandler(async (req, res) => {
-  const { Name, email, phone, password, specialCode } = req.body;
+  const { name, email, phone, password, specialCode } = req.body;
 
   if (specialCode !== "VENDOR_SECRET_123") {
     throw new ApiError(403, "Invalid Vendor Code");
@@ -113,11 +113,11 @@ const registerAdmin = asyncHandler(async (req, res) => {
   const vendorCode = "VEND" + Math.random().toString(36).substring(2, 8).toUpperCase();
 
   const user = await User.create({
-    Name,
+    name,
     email,
     phone,
     password,
-    isAdmin: true,
+    role: "admin",
     vendorCode
   });
 
