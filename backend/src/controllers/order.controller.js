@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 // 🧩 Create order after successful payment
 export const createOrder = asyncHandler(async (req, res) => {
-    const { shippingAddress, paymentIntentId, totalAmount } = req.body;
+    const { shippingAddress, paymentIntentId, totalAmount, timeSlot, location } = req.body;
     const userId = req.user._id;
 
     if (req.user.role === "admin") {
@@ -52,6 +52,8 @@ export const createOrder = asyncHandler(async (req, res) => {
         totalAmount,
         shippingAddress,
         paymentIntentId,
+        timeSlot,
+        location,
         status: 'Processing'
     });
 
@@ -106,7 +108,7 @@ export const getOrderById = asyncHandler(async (req, res) => {
     }
 
     // Check if user is admin or order owner
-    if (order.user._id.toString() !== userId.toString() && !req.user.isAdmin) {
+    if (order.user._id.toString() !== userId.toString() && req.user.role !== "admin") {
         throw new ApiError(403, "You can only view your own orders");
     }
 

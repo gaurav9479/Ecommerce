@@ -1,13 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import mongoose from "mongoose";
-
-// Create Cart Model schema here since it was missing export in inspected file or use dynamic if preferred.
-// Assuming we fix the model first or import it.
-// Let's first fix the cart model file to export it properly, based on previous view_file it was missing export.
-// I will import it assuming I will fix it in next step, or define schema here transiently? No, better fix model.
-// I will assume "Cart" is exported from ../models/cart.model.js
 import { Cart } from "../models/cart.model.js";
 import { Product } from "../models/product.model.js";
 
@@ -67,4 +60,35 @@ const removeFromCart = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, cart, "Item removed from cart"));
 });
 
-export { addToCart, getCart, removeFromCart };
+const updateCartQuantity = asyncHandler(async (req, res) => {
+    const { productId, quantity } = req.body;
+    const userId = req.user._id;
+
+    if (!productId || quantity === undefined) {
+        throw new ApiError(400, "Product ID and quantity are required");
+    }
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+        throw new ApiError(404, "Cart not found");
+    }
+
+    const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
+
+    if (itemIndex > -1) {
+        if (quantity <= 0) {
+            cart.items.splice(itemIndex, 1);
+        } else {
+            cart.items[itemIndex].quantity = quantity;
+        }
+        await cart.save();
+    } else {
+        throw new ApiError(404, "Item not found in cart");
+    }
+
+    const updatedCart = await Cart.findOne({ user: userId }).populate("items.product");
+    return res.status(200).json(new ApiResponse(200, updatedCart, "Cart updated successfully"));
+});
+
+export { addToCart, getCart, removeFromCart, updateCartQuantity };
