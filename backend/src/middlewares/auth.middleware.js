@@ -3,7 +3,7 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-// 🛡 Verify JWT Authentication
+
 export const verifyJWT = asyncHandler(async (req, res, next) => {
     try {
         const token =
@@ -18,14 +18,14 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
         if (!user) throw new ApiError(401, "Invalid access token");
         if (user.isDeleted) throw new ApiError(403, "Account deactivated");
 
-        req.user = user; // attach user to request object
+        req.user = user; 
         next();
     } catch (err) {
         throw new ApiError(401, "Token expired or invalid");
     }
 });
 
-// ⚙️ Role-based Authorization Middleware
+
 export const authorizeRoles = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {

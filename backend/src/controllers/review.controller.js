@@ -30,10 +30,16 @@ export const createReview = asyncHandler(async (req, res) => {
     });
 
     // Update product rating
-    await product.updateRating();
+    try {
+        if (product) {
+            await product.updateRating();
+        }
+    } catch (error) {
+        console.error("Error updating product rating:", error);
+    }
 
     const populatedReview = await Review.findById(review._id)
-        .populate('user', 'Name email');
+        .populate('user', 'name email');
 
     res.status(201).json(new ApiResponse(201, populatedReview, "Review created successfully"));
 });
@@ -43,7 +49,7 @@ export const getProductReviews = asyncHandler(async (req, res) => {
     const { productId } = req.params;
 
     const reviews = await Review.find({ product: productId })
-        .populate('user', 'Name email')
+        .populate('user', 'name email')
         .sort({ createdAt: -1 });
 
     res.status(200).json(new ApiResponse(200, reviews, "Reviews fetched successfully"));
@@ -75,7 +81,7 @@ export const updateReview = asyncHandler(async (req, res) => {
     await product.updateRating();
 
     const updatedReview = await Review.findById(reviewId)
-        .populate('user', 'Name email');
+        .populate('user', 'name email');
 
     res.status(200).json(new ApiResponse(200, updatedReview, "Review updated successfully"));
 });

@@ -75,26 +75,31 @@ export const toggleWishlist = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Product not found");
     }
 
-    // Find or create wishlist
-    let wishlist = await Wishlist.findOne({ user: userId });
-    if (!wishlist) {
-        wishlist = await Wishlist.create({ user: userId, products: [] });
+    try {
+        // Find or create wishlist
+        let wishlist = await Wishlist.findOne({ user: userId });
+        if (!wishlist) {
+            wishlist = await Wishlist.create({ user: userId, products: [] });
+        }
+
+        // Toggle logic
+        const isInWishlist = wishlist.products.some(id => id?.toString() === productId?.toString());
+
+        if (isInWishlist) {
+            await wishlist.removeProduct(productId);
+        } else {
+            await wishlist.addProduct(productId);
+        }
+
+        const updatedWishlist = await Wishlist.findOne({ user: userId })
+            .populate('products');
+
+        res.status(200).json(new ApiResponse(200, {
+            wishlist: updatedWishlist,
+            action: isInWishlist ? 'removed' : 'added'
+        }, isInWishlist ? "Product removed from wishlist" : "Product added to wishlist"));
+    } catch (error) {
+        console.error("Error in toggleWishlist:", error);
+        throw error;
     }
-
-    // Toggle logic
-    const isInWishlist = wishlist.products.some(id => id.toString() === productId);
-
-    if (isInWishlist) {
-        await wishlist.removeProduct(productId);
-    } else {
-        await wishlist.addProduct(productId);
-    }
-
-    const updatedWishlist = await Wishlist.findOne({ user: userId })
-        .populate('products');
-
-    res.status(200).json(new ApiResponse(200, {
-        wishlist: updatedWishlist,
-        action: isInWishlist ? 'removed' : 'added'
-    }, isInWishlist ? "Product removed from wishlist" : "Product added to wishlist"));
 });
