@@ -8,6 +8,7 @@ import ProductDetail from './Pages/ProductDetail';
 import Cart from './Pages/Cart';
 import Payment from './Pages/Payment';
 import Wishlist from './Pages/Wishlist';
+import CheckoutDetails from './Pages/CheckoutDetails';
 import AdminLayout from './Admin/adminlayout';
 import AdminDashboard from './Admin/AdminDashboard';
 import AdminLogin from './Admin/AdminLogin';
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: 'wishlist',
         element: <Wishlist />
+      },
+      {
+        path: 'checkout-details',
+        element: <CheckoutDetails />
       }
     ]
   },

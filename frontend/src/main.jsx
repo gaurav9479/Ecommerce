@@ -4,6 +4,8 @@ import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from './Context/AuthContext.jsx'
 import { UserProvider } from './Context/User.Context.jsx'
+import { WishlistProvider } from './Context/WishlistContext.jsx'
+import { CartProvider } from './Context/CartContext.jsx'
 import { Toaster } from 'react-hot-toast'
 
 
@@ -13,10 +15,14 @@ import { Toaster } from 'react-hot-toast'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <UserProvider>
-      <App/>
-      <Toaster position="top-center" reverseOrder={false} />
-      </UserProvider>
+      <WishlistProvider>
+        <CartProvider>
+          <UserProvider>
+            <App />
+            <Toaster position="top-center" reverseOrder={false} />
+          </UserProvider>
+        </CartProvider>
+      </WishlistProvider>
     </AuthProvider>
       
 

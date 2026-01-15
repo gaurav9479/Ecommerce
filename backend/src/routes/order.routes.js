@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyJWT, authorizeRoles } from "../middlewares/auth.middleware.js";
 import {
     createOrder,
     getUserOrders,
@@ -18,8 +18,8 @@ router.post("/create", createOrder);
 router.get("/my-orders", getUserOrders);
 router.get("/:orderId", getOrderById);
 
-// Admin routes (add middleware check for admin in production)
-router.patch("/:orderId/status", updateOrderStatus);
-router.get("/admin/all", getAllOrders);
+// Admin routes
+router.patch("/:orderId/status", authorizeRoles("admin"), updateOrderStatus);
+router.get("/admin/all", authorizeRoles("admin"), getAllOrders);
 
 export default router;
