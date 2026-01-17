@@ -134,6 +134,38 @@ export const restoreUser = asyncHandler(async (req, res) => {
 });
 
 
+export const updateAccountDetails = asyncHandler(async (req, res) => {
+    const { name, email, phone } = req.body;
+
+    if (!name && !email && !phone) {
+        throw new ApiError(400, "At least one field is required");
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (name) user.name = name;
+
+    // Check if email/phone is being updated and is unique
+    if (email && email !== user.email) {
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) throw new ApiError(409, "Email already exists");
+        user.email = email;
+    }
+
+    if (phone && phone !== user.phone) {
+        const existingPhone = await User.findOne({ phone });
+        if (existingPhone) throw new ApiError(409, "Phone number already exists");
+        user.phone = phone;
+    }
+
+    await user.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user, "Account details updated successfully"));
+});
+
+
 export const getCurrentUser = asyncHandler(async (req, res) => {
     return res
         .status(200)

@@ -15,6 +15,7 @@ import AdminDashboard from './Admin/AdminDashboard';
 import AdminLogin from './Admin/AdminLogin';
 import AdminRegister from './Admin/AdminRegister';
 import AdminProductForm from './Admin/AdminProductForm';
+import UserDashboard from './Pages/UserDashboard';
 
 import { PrivateRoute } from './Routes/ProtectedRoutes';
 
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
           {
             path: 'checkout-details',
             element: <CheckoutDetails />
+          },
+          {
+            path: 'dashboard',
+            element: <UserDashboard />
           }
         ]
       },

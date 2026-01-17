@@ -42,6 +42,20 @@ const Shop = () => {
     
     return groups;
   }, [products, filters.category, filters.search, categories]);
+  
+  // Sync filters with URL params
+  useEffect(() => {
+    setFilters(prev => ({
+      ...prev,
+      search: searchParams.get('search') || '',
+      category: searchParams.get('category') || '',
+      minPrice: searchParams.get('minPrice') || '',
+      maxPrice: searchParams.get('maxPrice') || '',
+      minRating: searchParams.get('minRating') || '',
+      sort: searchParams.get('sort') || '-createdAt',
+      page: Number(searchParams.get('page')) || 1
+    }));
+  }, [searchParams]);
 
   useEffect(() => {
     fetchProducts();

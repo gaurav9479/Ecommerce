@@ -7,7 +7,8 @@ import {
     changeCurrentPassword,
     deleteUser,
     restoreUser,
-    getCurrentUser
+    getCurrentUser,
+    updateAccountDetails
 } from "../controllers/user.controller.js";
 import { verifyJWT, authorizeRoles } from "../middlewares/auth.middleware.js";
 import {
@@ -25,6 +26,7 @@ router.post("/login", loginUser);
 router.post("/refresh-token", refreshAccessToken);
 router.post("/logout", verifyJWT, logoutUser);
 router.post("/change-password", verifyJWT, changeCurrentPassword);
+router.patch("/update-account", verifyJWT, updateAccountDetails);
 router.delete("/delete", verifyJWT, deleteUser);
 router.post("/restore", restoreUser);
 router.get("/me", verifyJWT, getCurrentUser);

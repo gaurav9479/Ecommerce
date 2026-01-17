@@ -26,7 +26,11 @@ export const CartProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchCart();
+        if (user) {
+            fetchCart();
+        } else {
+            setCart({ items: [], totalPrice: 0 });
+        }
     }, [user]);
 
     const addToCart = async (productId, quantity = 1) => {

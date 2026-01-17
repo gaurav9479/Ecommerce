@@ -60,4 +60,4 @@ productSchema.methods.updateRating = async function () {
     await this.save();
 };
 
-export const Product = mongoose.model("product", productSchema)
+export const Product = mongoose.model("Product", productSchema)

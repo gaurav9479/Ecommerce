@@ -1,4 +1,5 @@
 import { Product } from "../models/product.model.js";
+import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -67,11 +68,29 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 
 
     if (search) {
-        filter.$or = [
-            { title: { $regex: search, $options: 'i' } },
-            { description: { $regex: search, $options: 'i' } },
-            { tags: { $in: [new RegExp(search, 'i')] } }
-        ];
+        const searchTerms = search.trim().split(/\s+/);
+        filter.$and = await Promise.all(searchTerms.map(async term => {
+            const regex = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+
+            // Find users matching the term (Name or Shop Name)
+            const matchingOwners = await User.find({
+                $or: [
+                    { name: { $regex: regex } },
+                    { "shopDetails.shopName": { $regex: regex } }
+                ]
+            }).select('_id');
+            const ownerIds = matchingOwners.map(user => user._id);
+
+            return {
+                $or: [
+                    { title: { $regex: regex } },
+                    { description: { $regex: regex } },
+                    { tags: { $in: [regex] } },
+                    { category: { $regex: regex } },
+                    { owner: { $in: ownerIds } } // Match products from these owners
+                ]
+            };
+        }));
     }
 
 

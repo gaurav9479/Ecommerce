@@ -13,9 +13,9 @@ import {
 const router = express.Router();
 
 
-router.get("/", verifyJWT, getAllProducts);
-router.get("/featured", verifyJWT, getFeaturedProducts);
-router.get("/:id", verifyJWT, getProductById);
+router.get("/", getAllProducts);
+router.get("/featured", getFeaturedProducts);
+router.get("/:id", getProductById);
 
 
 router.post("/", verifyJWT, authorizeRoles("retailer"), createProduct);
