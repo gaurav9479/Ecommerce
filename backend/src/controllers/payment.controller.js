@@ -24,7 +24,7 @@ const createPaymentIntent = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Cart is empty");
     }
 
-    // Calculate total amount
+
     let totalAmount = 0;
     cart.items.forEach((item, index) => {
         console.log(`Item ${index}:`, item.product ? `Product present (Price: ${item.product.price})` : "Product NULL");
@@ -40,7 +40,7 @@ const createPaymentIntent = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Total amount is 0");
     }
 
-    // Create PaymentIntent
+
     try {
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(totalAmount * 100), // Amount in paise

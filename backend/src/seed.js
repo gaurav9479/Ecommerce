@@ -38,7 +38,7 @@ const seedDB = async () => {
         await mongoose.connect(`${mongoUrl}/${DB_NAME}`);
         console.log("Connected to MongoDB for seeding...");
 
-        // 1. Ensure we have users/vendors
+        
         let users = await User.find().limit(20);
         if (users.length < 5) {
             console.log("Not enough users found. Creating demo users...");
@@ -63,10 +63,7 @@ const seedDB = async () => {
             await User.updateMany({ _id: { $in: users.slice(0, 3).map(u => u._id) } }, { role: "retailer" });
         }
 
-        // 2. Clear existing products and reviews (optional, but requested to seed 100)
-        // console.log("Clearing existing products and reviews...");
-        // await Product.deleteMany({});
-        // await Review.deleteMany({});
+        
 
         console.log("Seeding 100 products...");
         const productsToInsert = [];
@@ -82,10 +79,10 @@ const seedDB = async () => {
                 price: Math.floor(Math.random() * 2000) + 50,
                 description: `This is a premium ${baseName} designed for high performance and durability. Featuring the latest tech and sleek aesthetics, it is a perfect choice for professionals and enthusiasts alike.`,
                 category: category,
-                image: [`https://picsum.photos/seed/${i + 100}/800/800`], // High-res placeholder images
+                image: [`https://picsum.photos/seed/${i + 100}/800/800`], 
                 stock: Math.floor(Math.random() * 50) + 10,
                 owner: retailer._id,
-                rating: 0, // Will be updated after reviews
+                rating: 0, 
                 numReviews: 0,
                 tags: [category, "premium", "trending", "tech"],
                 featured: i % 10 === 0
@@ -95,12 +92,12 @@ const seedDB = async () => {
         const insertedProducts = await Product.insertMany(productsToInsert);
         console.log(`Inserted ${insertedProducts.length} products.`);
 
-        // 3. Seed Reviews for each product
+        
         console.log("Seeding reviews for products...");
         const reviewsToInsert = [];
 
         for (const product of insertedProducts) {
-            const numReviews = Math.floor(Math.random() * 5) + 2; // 2-6 reviews per product
+            const numReviews = Math.floor(Math.random() * 5) + 2; 
             const reviewUsers = [...regularUsers].sort(() => 0.5 - Math.random()).slice(0, numReviews);
 
             for (const user of reviewUsers) {
@@ -116,7 +113,7 @@ const seedDB = async () => {
         await Review.insertMany(reviewsToInsert);
         console.log(`Inserted ${reviewsToInsert.length} reviews.`);
 
-        // 4. Update product ratings and review counts
+        
         console.log("Updating product ratings totals...");
         for (const product of insertedProducts) {
             await product.updateRating();

@@ -24,7 +24,7 @@ const AdminLogin = () => {
       
       navigate("/admin/dashboard");
     } catch (err) {
-      // Toast is handled in AuthContext.login
+
     } finally {
       setLoading(false);
     }

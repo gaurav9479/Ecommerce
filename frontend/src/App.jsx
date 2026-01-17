@@ -16,6 +16,8 @@ import AdminLogin from './Admin/AdminLogin';
 import AdminRegister from './Admin/AdminRegister';
 import AdminProductForm from './Admin/AdminProductForm';
 
+import { PrivateRoute } from './Routes/ProtectedRoutes';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -34,28 +36,33 @@ const router = createBrowserRouter([
         element: <Register />
       },
       {
-        path: 'products',
-        element: <Shop />
-      },
-      {
-        path: 'product/:id',
-        element: <ProductDetail />
-      },
-      {
-        path: 'cart',
-        element: <Cart />
-      },
-      {
-        path: 'payment',
-        element: <Payment />
-      },
-      {
-        path: 'wishlist',
-        element: <Wishlist />
-      },
-      {
-        path: 'checkout-details',
-        element: <CheckoutDetails />
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: 'products',
+            element: <Shop />
+          },
+          {
+            path: 'product/:id',
+            element: <ProductDetail />
+          },
+          {
+            path: 'cart',
+            element: <Cart />
+          },
+          {
+            path: 'payment',
+            element: <Payment />
+          },
+          {
+            path: 'wishlist',
+            element: <Wishlist />
+          },
+          {
+            path: 'checkout-details',
+            element: <CheckoutDetails />
+          }
+        ]
       },
       {
         path: 'themes',

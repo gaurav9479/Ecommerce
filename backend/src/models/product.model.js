@@ -34,14 +34,14 @@ const productSchema = new mongoose.Schema({
     }
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } })
 
-// Virtual field for reviews
+
 productSchema.virtual('reviews', {
     ref: 'Review',
     localField: '_id',
     foreignField: 'product'
 });
 
-// Method to update average rating
+
 productSchema.methods.updateRating = async function () {
     const Review = mongoose.model('Review');
     const stats = await Review.aggregate([

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 
-// Fix for default marker icon in Leaflet + React
+
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
@@ -35,7 +35,7 @@ const CheckoutDetails = () => {
         timeSlot: ""
     });
     
-    // Default position (Mumbai)
+
     const [position, setPosition] = useState({ lat: 19.0760, lng: 72.8777 });
 
     const timeSlots = [
@@ -47,7 +47,7 @@ const CheckoutDetails = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Redirect to payment and pass address/timeSlot as state
+
         navigate('/payment', { 
             state: { 
                 shippingAddress: `${formData.street}, ${formData.city}, ${formData.state} - ${formData.zip}`,
@@ -66,7 +66,7 @@ const CheckoutDetails = () => {
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-8 items-start">
-                    {/* Map Section */}
+
                     <div className="glass-strong rounded-3xl overflow-hidden border border-slate-700/50 animate-slideInLeft h-[500px] sticky top-24">
                         <div className="bg-slate-800/80 px-6 py-4 border-b border-slate-700 flex items-center justify-between">
                             <span className="text-white font-bold flex items-center gap-2">
@@ -94,7 +94,7 @@ const CheckoutDetails = () => {
                         </div>
                     </div>
 
-                    {/* Form Section */}
+
                     <div className="glass-strong rounded-3xl p-8 md:p-10 border border-slate-700/50 relative overflow-hidden animate-slideInRight">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl -mr-32 -mt-32" />
                         

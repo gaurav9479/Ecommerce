@@ -16,7 +16,7 @@ const wishlistSchema = new Schema(
     { timestamps: true }
 );
 
-// Method to add product to wishlist
+
 wishlistSchema.methods.addProduct = function (productId) {
     if (!this.products.includes(productId)) {
         this.products.push(productId);
@@ -24,7 +24,7 @@ wishlistSchema.methods.addProduct = function (productId) {
     return this.save();
 };
 
-// Method to remove product from wishlist
+
 wishlistSchema.methods.removeProduct = function (productId) {
     this.products = this.products.filter(id => id.toString() !== productId.toString());
     return this.save();

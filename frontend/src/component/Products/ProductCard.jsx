@@ -61,7 +61,7 @@ const ProductCard = ({ product }) => {
   return (
     <Link to={`/product/${product._id}`} className="block">
       <div className="card-interactive group overflow-hidden will-change-transform">
-        {/* Image Container */}
+
         <div className="relative overflow-hidden rounded-lg mb-4 bg-slate-800">
           <img
             src={imageUrl}
@@ -73,7 +73,7 @@ const ProductCard = ({ product }) => {
             }}
           />
           
-          {/* Wishlist Heart */}
+
           <button
             onClick={handleWishlistClick}
             disabled={isWishlistLoading}
@@ -89,7 +89,7 @@ const ProductCard = ({ product }) => {
             </svg>
           </button>
 
-          {/* Stock Badge */}
+
           {product.stock <= 0 && (
             <div className="absolute top-3 left-3 badge badge-error">
               Out of Stock
@@ -103,18 +103,16 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* Product Info */}
+
         <div className="space-y-3">
           <h3 className="font-semibold text-lg text-white line-clamp-2 group-hover:gradient-text transition-all">
             {product.title}
           </h3>
           
-          {/* Rating */}
+
           {product.rating > 0 && (
             <StarRating rating={product.rating} showCount count={product.numReviews} size="sm" />
           )}
-
-          {/* Price and Actions */}
           <div className="flex flex-col gap-3 pt-2">
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold gradient-text">
@@ -149,7 +147,7 @@ const ProductCard = ({ product }) => {
             </button>
           </div>
           
-          {/* Stock indicator */}
+
           {product.stock > 0 && product.stock <= 10 && (
             <p className="text-xs text-amber-400">Only {product.stock} left!</p>
           )}

@@ -77,7 +77,7 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-slate-900 py-12">
       <div className="container-custom">
         <div className="grid md:grid-cols-2 gap-12 mb-16">
-          {/* Image Gallery */}
+
           <div className="space-y-4">
             <div className="glass rounded-2xl overflow-hidden p-4">
               <img
@@ -103,7 +103,7 @@ const ProductDetail = () => {
             )}
           </div>
 
-          {/* Product Info */}
+
           <div className="space-y-6">
             <div>
               <h1 className="text-4xl font-bold text-white mb-3">{product.title}</h1>
@@ -196,7 +196,7 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* Tabs Section */}
+
         <div className="glass rounded-2xl p-8">
           <div className="flex gap-4 border-b border-slate-700 mb-6">
             {['description', 'specifications', 'reviews'].map((tab) => (

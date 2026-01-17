@@ -12,8 +12,8 @@ import wishlistRoutes from "./routes/wishlist.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
+    
 
-// Custom CORS Middleware
 const allowedOrigins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
     const origin = req.headers.origin;
     console.log(`CORS Check: Method=${req.method}, Origin=${origin}`);
 
-    // Always set a specific origin, never '*'
+
     if (allowedOrigins.includes(origin)) {
         res.setHeader("Access-Control-Allow-Origin", origin);
     } else {
@@ -42,7 +42,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Body Parser + Static Assets
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
@@ -58,10 +58,10 @@ app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
 
-// Error Handling Middleware
+
 app.use(errorHandler);
 
-// Health check
+
 app.get("/", (req, res) => {
     res.send("Ecommerce API is running 🚀");
 });

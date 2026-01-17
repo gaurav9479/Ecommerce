@@ -19,7 +19,7 @@ import {
 
 const router = express.Router();
 
-// User authentication
+
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/refresh-token", refreshAccessToken);
@@ -29,7 +29,7 @@ router.delete("/delete", verifyJWT, deleteUser);
 router.post("/restore", restoreUser);
 router.get("/me", verifyJWT, getCurrentUser);
 
-// Admin controls
+
 router.get("/admin/users", verifyJWT, authorizeRoles("admin"), getAllUsers);
 router.get("/admin/users/:id", verifyJWT, authorizeRoles("admin"), getUserById);
 router.put("/admin/users/:id/deactivate", verifyJWT, authorizeRoles("admin"), deactivateUser);

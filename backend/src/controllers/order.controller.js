@@ -5,7 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-// 🧩 Create order after successful payment
+
 export const createOrder = asyncHandler(async (req, res) => {
     const { shippingAddress, paymentIntentId, totalAmount, timeSlot, location } = req.body;
     const userId = req.user._id;
@@ -14,14 +14,14 @@ export const createOrder = asyncHandler(async (req, res) => {
         throw new ApiError(403, "Admins cannot make purchases.");
     }
 
-    // Get user's cart
+
     const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
     if (!cart || cart.items.length === 0) {
         throw new ApiError(400, "Cart is empty");
     }
 
-    // Validate stock and prepare order items
+
     const orderItems = [];
     for (const item of cart.items) {
         const product = await Product.findById(item.product);
@@ -40,12 +40,12 @@ export const createOrder = asyncHandler(async (req, res) => {
             price: product.price
         });
 
-        // Reduce stock
+
         product.stock -= item.quantity;
         await product.save();
     }
 
-    // Create order
+
     const order = await Order.create({
         user: userId,
         items: orderItems,
@@ -57,7 +57,7 @@ export const createOrder = asyncHandler(async (req, res) => {
         status: 'Processing'
     });
 
-    // Clear cart after order
+
     cart.items = [];
     await cart.save();
 
@@ -68,7 +68,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     res.status(201).json(new ApiResponse(201, populatedOrder, "Order created successfully"));
 });
 
-// 🧩 Get user's order history
+
 export const getUserOrders = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const page = Number(req.query.page) || 1;
@@ -94,7 +94,7 @@ export const getUserOrders = asyncHandler(async (req, res) => {
     }, "Orders fetched successfully"));
 });
 
-// 🧩 Get order by ID
+
 export const getOrderById = asyncHandler(async (req, res) => {
     const { orderId } = req.params;
     const userId = req.user._id;
@@ -107,7 +107,7 @@ export const getOrderById = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Order not found");
     }
 
-    // Check if user is admin or order owner
+
     if (order.user._id.toString() !== userId.toString() && req.user.role !== "admin") {
         throw new ApiError(403, "You can only view your own orders");
     }
@@ -115,12 +115,10 @@ export const getOrderById = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, order, "Order fetched successfully"));
 });
 
-// 🧩 Update order status (Admin only)
+
 export const updateOrderStatus = asyncHandler(async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;
-
-    // Validate status
     const validStatuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled'];
     if (!validStatuses.includes(status)) {
         throw new ApiError(400, `Invalid status. Must be one of: ${validStatuses.join(', ')}`);
@@ -144,7 +142,7 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, updatedOrder, "Order status updated successfully"));
 });
 
-// 🧩 Get all orders (Admin only)
+
 export const getAllOrders = asyncHandler(async (req, res) => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 20;

@@ -1,103 +1,145 @@
-# Ecommerce
-# Ecommerce
- 
-## Project Blueprint
+# Glipkart - Full Stack E-commerce Application
 
-### Overview
-Full‑stack ecommerce application with a Node.js/Express/MongoDB backend and a React (Vite) frontend. Includes user auth, admin product management with image upload, and product listing.
+Glipkart is a robust, full-featured e-commerce platform built with the **MERN Stack** (MongoDB, Express, React, Node.js). It offers a seamless shopping experience with features like user authentication, product search & filtering, shopping cart, wishlist, secure payments via Stripe, and a comprehensive admin dashboard.
 
-### Backend (Node.js + Express + MongoDB)
-- **Entry Points**
-  - `src/server.js`: Loads env, connects DB, starts server on `process.env.PORT || 9000`.
-  - `src/app.js`: Express app setup (CORS, JSON parsers, static, cookies), mounts routes.
-- **Config**
-  - `src/constants.js`: `DB_NAME` constant.
-  - `src/db/index.js`: Mongoose connection using `process.env.MONGODB_URL` and `DB_NAME`.
-- **Models**
-  - `src/models/user.model.js`: User schema with bcrypt hashing, JWT helpers, admin flag, refreshToken.
-  - `src/models/product.model.js`: Product schema (title, price, description, category, image[]).
-  - `src/models/{cart,order,review,catergory}.model.js`: Placeholders for future features.
-- **Controllers**
-  - `src/controllers/user.controller.js`: Register, login, logout, refresh access token, change password.
-  - `src/controllers/admin.controller.js`: Admin login; `addProduct` with Cloudinary upload; `getAllProducts`.
-- **Routes**
-  - `src/routes/user.routes.js`
-    - POST `/api/v1/users/register`
-    - POST `/api/v1/users/login`
-    - POST `/api/v1/users/logout` (protected)
-  - `src/routes/admin.routes.js`
-    - POST `/api/v1/admin/login`
-    - POST `/api/v1/admin/ADD-products`
-    - GET `/api/v1/admin/products`
-  - Public products: GET `/api/v1/products` (mounted in `app.js`).
-- **Middleware**
-  - `src/middlewares/auth.middleware.js`: `verifyJWT` from cookies or Authorization header.
-  - `src/middlewares/multer.middleware.js`: Handles multipart uploads for product images.
-- **Utils**
-  - `src/utils/{ApiError,ApiResponse,asyncHandler}.js`: Error/response helpers and async wrapper.
-  - `src/utils/cloudinary.js`: Upload to Cloudinary.
-  - `src/seedproduct.js`: Seed script (optional).
+## Key Features
 
-### Frontend (React + Vite + Tailwind)
-- **Entry & Routing**
-  - `src/main.jsx`: Mounts app with `AuthProvider`, `UserProvider`, `react-hot-toast`.
-  - `src/App.jsx`: Router with public (`/`, `login`, `register`) and admin (`/admin/*`) routes.
-- **Context**
-  - `src/Context/AuthContext.jsx`: Auth state (`user`, `setUser`).
-  - `src/Context/User.Context.jsx`: Additional user-scoped state (extensible).
-- **Pages**
-  - `src/Pages/Login.jsx`: User login UI.
-  - `src/Pages/Register.jsx`: User registration UI.
-- **Layout & Components**
-  - `src/component/Applayout/Applayout.jsx`: Shell layout for public routes.
-  - `src/component/Home.jsx`: Landing page with slider and product grid.
-  - `src/component/{Navbar,Footer,Swiper}.jsx`: Site chrome and slider.
-  - `src/component/Products/{Productlist,ProductCard}.jsx`: Fetch and display products from API.
-- **Admin**
-  - `src/Admin/adminlayout.jsx`: Admin layout with nested routes.
-  - `src/Admin/adminNav.jsx`: Admin navigation bar.
-  - `src/Admin/AdminDashboard.jsx`: Admin dashboard (placeholder).
-  - `src/Admin/AdminProductForm.jsx`: Add product form (title, price, description, category, images).
-- **Services**
-  - `src/axios.service/authService.js`: Axios helpers for auth (extendable).
+### User Features
+*   **Authentication**: Secure Sign Up and Login using JWT.
+*   **Product Browsing**:
+    *   Search products by name.
+    *   Filter by category, price range, and ratings.
+    *   Sort by price and new arrivals.
+*   **Shopping Experience**:
+    *   **Cart**: Add, remove, and update quantities.
+    *   **Wishlist**: Save favorite items for later.
+    *   **Product Details**: View detailed info, images, and reviews.
+*   **Checkout & Payment**:
+    *   Secure checkout process.
+    *   Payment integration with **Stripe**.
+    *   Order history and tracking.
+*   **Theming**: Choose from 5 distinct themes (Classic, Dark, Ocean, Sunset, Forest) to personalize the look and feel.
 
-### Data Flow
-- **Auth**
-  - User/Admin login → JWT access/refresh tokens generated → set as HTTP‑only cookies.
-  - Protected endpoints use `verifyJWT` to validate tokens.
-- **Products**
-  - Admin uploads product via `AdminProductForm` → POST `/api/v1/admin/ADD-products` with images.
-  - Images uploaded to Cloudinary → URLs stored in MongoDB.
-  - Public product listing via GET `/api/v1/products` → rendered in `Productlist` and `ProductCard`.
+### Admin Features
+*   **Dashboard**: Overview of sales, orders, and user stats.
+*   **Product Management**: Create, update, and delete products.
+*   **Order Management**: View and update order statuses (Processing, Shipped, Delivered).
 
-### API Summary
-- Public:
-  - GET `/api/v1/products` → List all products.
-- Users:
-  - POST `/api/v1/users/register`
-  - POST `/api/v1/users/login`
-  - POST `/api/v1/users/logout` (auth)
-- Admin:
-  - POST `/api/v1/admin/login`
-  - POST `/api/v1/admin/ADD-products` (multipart images)
-  - GET `/api/v1/admin/products`
+## Tech Stack
 
-### Current Capabilities
-- User and admin auth with JWT, secure cookies.
-- Add products with multiple images (Cloudinary) and list products publicly.
-- React UI with Tailwind and toast notifications.
+### Frontend
+*   **React** (Vite): Fast and modern UI library.
+*   **Tailwind CSS**: Utility-first CSS framework for styling.
+*   **React Router**: For client-side routing.
+*   **Context API**: State management for Auth, Cart, Wishlist, and Theme.
+*   **Axios**: For API requests.
+*   **Stripe.js**: For handling payments.
 
-### Roadmap Ideas
-- Cart, orders, payments integration.
-- Reviews/ratings, categories, filters, search.
-- Admin analytics dashboard, inventory management.
+### Backend
+*   **Node.js & Express**: Scalable server-side runtime and framework.
+*   **MongoDB & Mongoose**: NoSQL database for flexible data storage.
+*   **JWT (JSON Web Tokens)**: Secure user authentication.
+*   **Cloudinary**: For image storage and management.
+*   **Stripe API**: Secure payment processing.
 
-## Key Auth & Platform Strategy
+## Getting Started
 
-- ✅ **Dual-token auth (access + refresh)**: Short-lived access tokens and longer-lived refresh tokens; refresh flow provided, tokens rotated and stored server-side for revocation.
-- ✅ **Role-based structure (user, retailer, admin)**: Controllers and routes structured to support multiple roles; guards can be extended to enforce role checks.
-- ✅ **Soft delete & restore system**: Designed to support soft deletions via flags/timestamps to allow safe restore without data loss.
-- ✅ **Email + phone login**: User model and controllers support both email and phone credentials for flexible authentication flows.
-- ✅ **Cookie-secured JWTs**: Tokens issued in HTTP-only cookies to reduce XSS exposure; headers supported for service-to-service.
-- ✅ **Modular async error/response management**: Centralized `ApiError`, `ApiResponse`, and `asyncHandler` utilities for predictable error and response handling.
-- ✅ **Ready for future OTP verification & retailer dashboard**: OTP controller/model scaffolding and admin/retailer layout prepared for future feature expansion.
+Follow these steps to set up the project locally.
+
+### Prerequisites
+*   Node.js (v16+)
+*   MongoDB (Local or Atlas)
+*   Stripe Account
+*   Cloudinary Account
+
+### 1. Clone the Repository
+```bash
+git clone <repository_url>
+cd ecommerce
+```
+
+### 2. Backend Setup
+Navigate to the backend directory and install dependencies:
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file in the `backend` directory with the following variables:
+```env
+PORT=9000
+MONGODB_URI=your_mongodb_connection_string
+CORS_ORIGIN=http://localhost:5173
+ACCESS_TOKEN_SECRET=your_access_token_secret
+ACCESS_TOKEN_EXPIRY=1d
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
+REFRESH_TOKEN_EXPIRY=10d
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+STRIPE_SECRET_KEY=your_stripe_secret_key
+email_user=your_email_for_nodemalier
+email_pass=your_email_password
+```
+
+Start the backend server:
+```bash
+npm run dev
+```
+
+### 3. Frontend Setup
+Open a new terminal, navigate to the frontend directory, and install dependencies:
+```bash
+cd frontend
+npm install
+```
+
+Create a `.env` file in the `frontend` directory:
+```env
+VITE_API_URL=http://localhost:9000
+VITE_STRIPE_PUBLIC_KEY=your_stripe_public_key
+```
+
+Start the frontend development server:
+```bash
+npm run dev
+```
+
+The application should now be running at `http://localhost:5173`.
+
+## Project Structure
+
+```
+ecommerce/
+├── backend/            # Express/Node.js Server
+│   ├── src/
+│   │   ├── controllers/# Route Logic
+│   │   ├── models/     # Mongoose Models
+│   │   ├── routes/     # API Routes
+│   │   ├── middlewares/# Auth & Upload Middlewares
+│   │   ├── utils/      # Helper functions
+│   │   └── server.js   # Entry point
+│   └── package.json
+│
+└── frontend/           # React Application
+    ├── src/
+    │   ├── component/  # Reusable Components
+    │   ├── Context/    # React Context (Auth, Cart, Theme, etc.)
+    │   ├── Pages/      # Application Pages (Home, Shop, Cart, etc.)
+    │   └── main.jsx    # Entry point
+    └── package.json
+```
+
+## Themes
+Users can switch themes by clicking the theme icon in the navbar. The available themes are:
+- **Classic**: Purple/Pink Gradient
+- **Dark**: Slate/Midnight
+- **Ocean**: Blue/Cyan
+- **Sunset**: Orange/Red
+- **Forest**: Green/Emerald
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+This project is licensed under the ISC License.

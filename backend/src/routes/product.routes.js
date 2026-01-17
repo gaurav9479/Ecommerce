@@ -12,12 +12,12 @@ import {
 
 const router = express.Router();
 
-// Public routes
-router.get("/", getAllProducts);
-router.get("/featured", getFeaturedProducts);
-router.get("/:id", getProductById);
 
-// Retailer-only routes
+router.get("/", verifyJWT, getAllProducts);
+router.get("/featured", verifyJWT, getFeaturedProducts);
+router.get("/:id", verifyJWT, getProductById);
+
+
 router.post("/", verifyJWT, authorizeRoles("retailer"), createProduct);
 router.put("/:id", verifyJWT, authorizeRoles("retailer"), updateProduct);
 router.delete("/:id", verifyJWT, authorizeRoles("retailer"), deleteProduct);

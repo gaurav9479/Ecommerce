@@ -5,24 +5,24 @@ import ProductList from "./Products/Productlist";
 const Home = () => {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 gradient-bg-soft"></div>
         <div className="container-custom relative z-10 py-20 md:py-32">
           <div className="max-w-4xl mx-auto text-center space-y-8 animate-slideUp">
-            {/* Main Heading */}
+
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               Welcome to{" "}
               <span className="gradient-text">GLIPKART</span>
             </h1>
             
-            {/* Subheading */}
+
             <p className="text-xl md:text-2xl text-[var(--color-text-secondary)] max-w-2xl mx-auto">
               Discover premium electronics and gadgets at unbeatable prices.
               Your one-stop shop for all things tech.
             </p>
             
-            {/* CTA Buttons */}
+
             <div className="flex flex-wrap gap-4 justify-center pt-4">
               <Link to="/products" className="btn-primary">
                 Shop Now
@@ -35,7 +35,7 @@ const Home = () => {
               </Link>
             </div>
 
-            {/* Stats */}
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pt-12">
               {[
                 { label: "Products", value: "500+" },
@@ -52,17 +52,16 @@ const Home = () => {
           </div>
         </div>
         
-        {/* Animated Background Elements */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
       </section>
 
-      {/* Featured Products */}
+
       <section className="bg-[var(--color-bg-card)]/50 py-4">
         <ProductList featured={true} count={8} title="⭐ Featured Products" />
       </section>
 
-      {/* Categories Section */}
+
       <section className="container-custom section-padding">
         <h2 className="text-3xl font-bold gradient-text mb-8 text-center">Shop by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
@@ -90,7 +89,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Why Choose Us */}
+
       <section className="container-custom section-padding bg-slate-800/30 rounded-3xl my-12">
         <h2 className="text-3xl font-bold gradient-text mb-12 text-center">Why Choose GLIPKART?</h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -122,12 +121,12 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Latest Products */}
+
       <section>
         <ProductList count={12} title="Latest Arrivals" />
       </section>
 
-      {/* Newsletter Section */}
+
       <section className="container-custom section-padding">
         <div className="glass-strong rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-4">

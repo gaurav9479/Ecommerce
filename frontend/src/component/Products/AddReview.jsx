@@ -39,7 +39,7 @@ const AddReview = ({ productId, onReviewAdded }) => {
         return (
             <div className="glass rounded-lg p-6 text-center">
                 <p className="text-slate-300 mb-4">Please login to write a review</p>
-                {/* Login link could go here, but usually users know to login */}
+
             </div>
         );
     }

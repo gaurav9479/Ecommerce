@@ -9,10 +9,10 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// All routes require authentication
+
 router.use(verifyJWT);
 
-// Wishlist routes
+
 router.get("/", getWishlist);
 router.post("/add", addToWishlist);
 router.delete("/remove/:productId", removeFromWishlist);

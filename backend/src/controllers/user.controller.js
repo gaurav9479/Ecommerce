@@ -4,7 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
-// Reusable token generator
+
 const generateAccessAndRefreshToken = async (userId) => {
     const user = await User.findById(userId);
     const accessToken = user.generateAccessToken();
@@ -14,7 +14,7 @@ const generateAccessAndRefreshToken = async (userId) => {
     return { accessToken, refreshToken };
 };
 
-// 🧱 Register
+
 export const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password, phone, role, shopDetails } = req.body;
 
@@ -41,7 +41,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, { user: createdUser, accessToken, refreshToken }, "User registered successfully"));
 });
 
-// 🔑 Login (email or phone)
+
 export const loginUser = asyncHandler(async (req, res) => {
     const { emailOrPhone, password } = req.body;
     if (!emailOrPhone || !password)
@@ -68,7 +68,7 @@ export const loginUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "Login successful"));
 });
 
-// 🔁 Refresh Access Token
+
 export const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
     if (!incomingRefreshToken) throw new ApiError(401, "Unauthorized request");
@@ -88,7 +88,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { accessToken, refreshToken: newRefreshToken }, "Access token refreshed"));
 });
 
-// 🚪 Logout
+
 export const logoutUser = asyncHandler(async (req, res) => {
     await User.findByIdAndUpdate(req.user._id, { $unset: { refreshToken: 1 } }, { new: true });
     return res
@@ -98,7 +98,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "Logged out successfully"));
 });
 
-// 🧼 Soft Delete + Anonymize
+
 export const deleteUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     if (!user) throw new ApiError(404, "User not found");
@@ -113,7 +113,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, {}, "Account deleted successfully"));
 });
 
-// ♻️ Restore User
+
 export const restoreUser = asyncHandler(async (req, res) => {
     const { userId, email, phone } = req.body;
     const user = await User.findOne({ _id: userId, isDeleted: true });
@@ -133,14 +133,14 @@ export const restoreUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { accessToken, refreshToken, user }, "Account restored successfully"));
 });
 
-// 👤 Get Current User
+
 export const getCurrentUser = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(new ApiResponse(200, { user: req.user }, "Current user fetched successfully"));
 });
 
-// wrench Change Password
+
 export const changeCurrentPassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword } = req.body;
     const user = await User.findById(req.user._id).select("+password");

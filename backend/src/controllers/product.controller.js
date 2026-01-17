@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-// 🧩 Create Product
+
 export const createProduct = asyncHandler(async (req, res) => {
     const { name, price, description, category, imageUrl } = req.body;
 
@@ -20,12 +20,12 @@ export const createProduct = asyncHandler(async (req, res) => {
     res.status(201).json(new ApiResponse(201, product, "Product created successfully"));
 });
 
-// 🧩 Update Product with ownership check
+
 export const updateProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) throw new ApiError(404, "Product not found");
 
-    // Ownership check
+
     if (req.user.role !== "admin" && product.owner.toString() !== req.user._id.toString()) {
         throw new ApiError(403, "You can only modify your own products");
     }
@@ -36,7 +36,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, product, "Product updated successfully"));
 });
 
-// 🧩 Delete Product with ownership check
+
 export const deleteProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) throw new ApiError(404, "Product not found");
@@ -49,7 +49,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, {}, "Product deleted successfully"));
 });
 
-// 🧩 Get all products (public) with search, filters, pagination, and sorting
+
 export const getAllProducts = asyncHandler(async (req, res) => {
     const {
         search,
@@ -62,10 +62,10 @@ export const getAllProducts = asyncHandler(async (req, res) => {
         limit = 12
     } = req.query;
 
-    // Build filter object
+
     const filter = {};
 
-    // Search in title, description, and tags
+
     if (search) {
         filter.$or = [
             { title: { $regex: search, $options: 'i' } },
@@ -74,34 +74,30 @@ export const getAllProducts = asyncHandler(async (req, res) => {
         ];
     }
 
-    // Category filter
+
     if (category && category !== 'all') {
         filter.category = category;
     }
-
-    // Price range filter
     if (minPrice || maxPrice) {
         filter.price = {};
         if (minPrice) filter.price.$gte = Number(minPrice);
         if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    // Rating filter
+
     if (minRating) {
         filter.rating = { $gte: Number(minRating) };
     }
-
-    // Calculate pagination
     const skip = (Number(page) - 1) * Number(limit);
 
-    // Fetch products with filters
+
     const products = await Product.find(filter)
         .populate("owner", "name email")
         .sort(sort)
         .limit(Number(limit))
         .skip(skip);
 
-    // Get total count for pagination
+
     const total = await Product.countDocuments(filter);
 
     res.status(200).json(new ApiResponse(200, {
@@ -115,13 +111,13 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     }, "Products fetched successfully"));
 });
 
-// 🧩 Get retailer's own products
+
 export const getMyProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({ owner: req.user._id });
     res.status(200).json(new ApiResponse(200, products, "Your products fetched"));
 });
 
-// 🧩 Get product by ID with reviews populated
+
 export const getProductById = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
         .populate('owner', 'name email')
@@ -138,7 +134,7 @@ export const getProductById = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, product, "Product fetched successfully"));
 });
 
-// 🧩 Get featured products for homepage
+
 export const getFeaturedProducts = asyncHandler(async (req, res) => {
     const limit = Number(req.query.limit) || 8;
 

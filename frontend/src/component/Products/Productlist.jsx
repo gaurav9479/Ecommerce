@@ -17,7 +17,7 @@ const ProductList = ({ count = 12, featured = false, title = "Our Products" }) =
         
         const response = await axios.get(endpoint);
         
-        // Handle both direct array and paginated response
+
         const productData = response.data.data.products || response.data.data;
         setProducts(Array.isArray(productData) ? productData : []);
       } catch (error) {

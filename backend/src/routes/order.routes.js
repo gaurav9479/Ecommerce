@@ -10,15 +10,13 @@ import {
 
 const router = express.Router();
 
-// All routes require authentication
+
 router.use(verifyJWT);
 
-// User routes
+
 router.post("/create", createOrder);
 router.get("/my-orders", getUserOrders);
 router.get("/:orderId", getOrderById);
-
-// Admin routes
 router.patch("/:orderId/status", authorizeRoles("admin"), updateOrderStatus);
 router.get("/admin/all", authorizeRoles("admin"), getAllOrders);
 

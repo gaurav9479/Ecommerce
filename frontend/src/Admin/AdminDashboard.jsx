@@ -52,7 +52,7 @@ function AdminDashboard() {
         { withCredentials: true }
       );
       toast.success("Order status updated");
-      fetchData(); // Refresh data
+      fetchData(); 
     } catch (error) {
       console.error("Error updating status", error);
       toast.error("Failed to update status");
@@ -70,7 +70,7 @@ function AdminDashboard() {
   return (
     <div className="min-h-screen bg-[#f1f3f6] pb-12 font-sans text-[#212121]">
       <div className="max-w-[1400px] mx-auto p-6">
-        {/* Header */}
+
         <div className="flex justify-between items-end mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Seller Dashboard</h1>
@@ -84,7 +84,7 @@ function AdminDashboard() {
           </Link>
         </div>
 
-        {/* Navigation Tabs */}
+
         <div className="bg-white shadow-sm rounded-t-lg border-b border-gray-200 px-6 flex items-center gap-8 mb-4">
           <button
             onClick={() => setActiveTab("products")}
@@ -117,10 +117,10 @@ function AdminDashboard() {
           </button>
         </div>
 
-        {/* Content Area */}
+
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden min-h-[400px]">
           
-          {/* Products View */}
+
           {activeTab === "products" && (
             <div>
               {products.length === 0 ? (
@@ -190,7 +190,7 @@ function AdminDashboard() {
             </div>
           )}
 
-          {/* Orders View */}
+
           {activeTab === "orders" && (
             <div>
               {orders.length === 0 ? (

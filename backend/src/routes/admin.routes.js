@@ -9,9 +9,9 @@ const router = express.Router();
 router.post('/login', loginAdmin);
 router.post('/register', registerAdmin);
 
-// Secured routes
+
 router.route('/ADD-products').post(verifyJWT, upload.array("images", 10), addProduct);
-router.route('/products').get(getAllProducts); // Public or secured? Keeping public as per checking
+router.route('/products').get(getAllProducts); 
 router.route('/my-products').get(verifyJWT, getAdminProducts);
 
 export default router;

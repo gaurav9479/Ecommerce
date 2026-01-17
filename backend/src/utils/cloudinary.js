@@ -16,11 +16,11 @@ export const uploadOnCloudinary = async (localFilePath) => {
 
     });
 
-    fs.unlinkSync(localFilePath); // delete after upload
+    fs.unlinkSync(localFilePath); 
 
     return result.secure_url;
   } catch (error) {
-    console.error("❌ Cloudinary Upload Error:", error); // <-- show actual error
+    console.error(" Cloudinary Upload Error:", error); 
     return null;
   }
 };

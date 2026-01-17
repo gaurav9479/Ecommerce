@@ -72,7 +72,7 @@ export default function AdminProductForm() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Title */}
+
             <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Product Title</label>
                 <input
@@ -85,7 +85,7 @@ export default function AdminProductForm() {
                 />
             </div>
 
-            {/* Price */}
+
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Price (₹)</label>
                 <input
@@ -98,7 +98,7 @@ export default function AdminProductForm() {
                 />
             </div>
 
-            {/* Stock */}
+
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Stock Quantity</label>
                 <input
@@ -129,7 +129,7 @@ export default function AdminProductForm() {
                 </select>
             </div>
 
-            {/* Description */}
+
             <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Product Description</label>
                 <textarea
@@ -142,7 +142,7 @@ export default function AdminProductForm() {
                 ></textarea>
             </div>
 
-            {/* Image Upload */}
+
             <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Product Images</label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:bg-gray-50 transition-colors text-center cursor-pointer relative">
@@ -164,7 +164,7 @@ export default function AdminProductForm() {
             </div>
         </div>
 
-        {/* Submit Button */}
+
         <div className="flex justify-end pt-4 border-t border-gray-100">
             <button
             type="submit"
