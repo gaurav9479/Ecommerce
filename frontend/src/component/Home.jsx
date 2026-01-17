@@ -17,7 +17,7 @@ const Home = () => {
             </h1>
             
             {/* Subheading */}
-            <p className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl text-[var(--color-text-secondary)] max-w-2xl mx-auto">
               Discover premium electronics and gadgets at unbeatable prices.
               Your one-stop shop for all things tech.
             </p>
@@ -45,7 +45,7 @@ const Home = () => {
               ].map((stat, index) => (
                 <div key={index} className="glass rounded-xl p-4 hover:scale-105 transition-transform">
                   <div className="text-3xl font-bold gradient-text">{stat.value}</div>
-                  <div className="text-sm text-slate-400 mt-1">{stat.label}</div>
+                  <div className="text-sm text-[var(--color-text-muted)] mt-1">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -58,7 +58,7 @@ const Home = () => {
       </section>
 
       {/* Featured Products */}
-      <section className="bg-slate-900/50 py-4">
+      <section className="bg-[var(--color-bg-card)]/50 py-4">
         <ProductList featured={true} count={8} title="⭐ Featured Products" />
       </section>
 

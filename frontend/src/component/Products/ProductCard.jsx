@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import { useWishlist } from '../../Context/WishlistContext';
+import { useCart } from '../../Context/CartContext';
 import StarRating from '../StarRating';
 
-const ProductCard = ({ product, onWishlistToggle }) => {
+const ProductCard = ({ product }) => {
   const navigate = useNavigate();
-  const [isInWishlist, setIsInWishlist] = useState(false);
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const { addToCart } = useCart();
   const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
   const handleWishlistClick = async (e) => {
@@ -15,24 +16,11 @@ const ProductCard = ({ product, onWishlistToggle }) => {
     
     setIsWishlistLoading(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/wishlist/toggle`,
-        { productId: product._id },
-        { withCredentials: true }
-      );
-      
-      setIsInWishlist(response.data.data.action === 'added');
-      toast.success(response.data.message);
-      
-      if (onWishlistToggle) {
-        onWishlistToggle(product._id);
-      }
+      await toggleWishlist(product._id);
+      // Context handles state update
     } catch (error) {
       if (error.response?.status === 401) {
-        toast.error('Please login to add to wishlist');
         navigate('/login');
-      } else {
-        toast.error(error.response?.data?.message || 'Failed to update wishlist');
       }
     } finally {
       setIsWishlistLoading(false);
@@ -44,18 +32,24 @@ const ProductCard = ({ product, onWishlistToggle }) => {
     e.stopPropagation();
     
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/cart/add`,
-        { productId: product._id, quantity: 1 },
-        { withCredentials: true }
-      );
-      toast.success('Added to cart!');
+      await addToCart(product._id, 1);
     } catch (error) {
       if (error.response?.status === 401) {
-        toast.error('Please login to add to cart');
         navigate('/login');
-      } else {
-        toast.error(error.response?.data?.message || 'Failed to add to cart');
+      }
+    }
+  };
+
+  const handleBuyNow = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      await addToCart(product._id, 1);
+      navigate('/cart'); // Navigate to cart first to see summary or straight to payment
+    } catch (error) {
+      if (error.response?.status === 401) {
+        navigate('/login');
       }
     }
   };
@@ -66,12 +60,13 @@ const ProductCard = ({ product, onWishlistToggle }) => {
 
   return (
     <Link to={`/product/${product._id}`} className="block">
-      <div className="card-interactive group overflow-hidden">
+      <div className="card-interactive group overflow-hidden will-change-transform">
         {/* Image Container */}
         <div className="relative overflow-hidden rounded-lg mb-4 bg-slate-800">
           <img
             src={imageUrl}
             alt={product.title}
+            loading="lazy"
             className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
             onError={(e) => {
               e.target.src = 'https://placehold.co/400x400/1e293b/8b5cf6?text=No+Image';
@@ -85,7 +80,7 @@ const ProductCard = ({ product, onWishlistToggle }) => {
             className={`absolute top-3 right-3 p-2 rounded-full glass-strong hover:scale-110 transition-all duration-300 ${isWishlistLoading ? 'opacity-50' : ''}`}
           >
             <svg
-              className={`w-5 h-5 ${isInWishlist ? 'fill-pink-500 text-pink-500' : 'fill-none text-white'}`}
+              className={`w-5 h-5 ${isInWishlist(product._id) ? 'fill-pink-500 text-pink-500' : 'fill-none text-white'}`}
               stroke="currentColor"
               strokeWidth="2"
               viewBox="0 0 24 24"
@@ -120,24 +115,37 @@ const ProductCard = ({ product, onWishlistToggle }) => {
           )}
 
           {/* Price and Actions */}
-          <div className="flex items-center justify-between pt-2">
-            <span className="text-2xl font-bold gradient-text">
-              ₹{product.price?.toLocaleString()}
-            </span>
+          <div className="flex flex-col gap-3 pt-2">
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold gradient-text">
+                ₹{product.price?.toLocaleString()}
+              </span>
+              <button
+                onClick={handleAddToCart}
+                disabled={product.stock <= 0}
+                className={`p-2.5 rounded-lg transition-all duration-300 ${
+                  product.stock > 0 
+                    ? 'bg-slate-700 text-white hover:bg-slate-600' 
+                    : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                }`}
+                title="Add to cart"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </button>
+            </div>
             
             <button
-              onClick={handleAddToCart}
+              onClick={handleBuyNow}
               disabled={product.stock <= 0}
-              className={`p-2.5 rounded-lg transition-all duration-300 ${
+              className={`w-full py-2.5 rounded-lg font-bold transition-all duration-300 ${
                 product.stock > 0 
-                  ? 'gradient-bg text-white hover:scale-110 hover:shadow-xl' 
-                  : 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                  ? 'gradient-bg text-white hover:scale-[1.02] shadow-lg shadow-purple-500/20' 
+                  : 'bg-slate-800 text-slate-500 cursor-not-allowed'
               }`}
-              title={product.stock > 0 ? 'Add to cart' : 'Out of stock'}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+              Buy Now
             </button>
           </div>
           

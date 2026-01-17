@@ -22,12 +22,14 @@ export const AuthProvider = ({ children }) => {
     })();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (emailOrPhone, password) => {
     try {
-      const { data } = await api.post("/users/login", { email, password });
-      setUser(data.data.user);
-      toast.success(`Welcome back, ${data.data.user.name || "user"}!`);
-      return data.data.user;
+      const { data } = await api.post("/users/login", { emailOrPhone, password });
+      const user = data.data.user;
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+      toast.success(`Welcome back, ${user.name || "user"}!`);
+      return user;
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
       throw err;

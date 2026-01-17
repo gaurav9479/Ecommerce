@@ -9,6 +9,7 @@ import Cart from './Pages/Cart';
 import Payment from './Pages/Payment';
 import Wishlist from './Pages/Wishlist';
 import CheckoutDetails from './Pages/CheckoutDetails';
+import ThemePage from './Pages/ThemePage';
 import AdminLayout from './Admin/adminlayout';
 import AdminDashboard from './Admin/AdminDashboard';
 import AdminLogin from './Admin/AdminLogin';
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: 'checkout-details',
         element: <CheckoutDetails />
+      },
+      {
+        path: 'themes',
+        element: <ThemePage />
       }
     ]
   },

@@ -5,45 +5,108 @@
 
 @layer base {
     :root {
-
+        /* Default Variables (Classic Theme Fallback) */
         --color-primary-from: #8b5cf6;
-
         --color-primary-via: #6366f1;
-
         --color-primary-to: #ec4899;
 
         --color-bg-main: #0f172a;
-
         --color-bg-card: #1e293b;
-
         --color-bg-hover: #334155;
 
         --color-text-primary: #f8fafc;
-
         --color-text-secondary: #cbd5e1;
-
         --color-text-muted: #94a3b8;
 
-        --color-success: #10b981;
-
-        --color-warning: #f59e0b;
-
-        --color-error: #ef4444;
-
-        --color-info: #3b82f6;
-
-
-
+        /* Glassmorphism */
         --glass-bg: rgba(30, 41, 59, 0.7);
+        --glass-bg-strong: rgba(30, 41, 59, 0.95);
         --glass-border: rgba(255, 255, 255, 0.1);
         --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
         /* Shadows */
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
         --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
+
+        /* Functional Colors */
+        --color-success: #10b981;
+        --color-warning: #f59e0b;
+        --color-error: #ef4444;
+        --color-info: #3b82f6;
+    }
+
+    /* === THEME 1: CLASSIC (PURPLE/PINK) === */
+    .theme-classic {
+        --color-primary-from: #8b5cf6;
+        --color-primary-via: #6366f1;
+        --color-primary-to: #ec4899;
+
+        --color-bg-main: #0f172a;
+        --color-bg-card: #1e293b;
+        --color-bg-hover: #334155;
+
+        --glass-bg: rgba(30, 41, 59, 0.7);
+        --glass-bg-strong: rgba(30, 41, 59, 0.95);
+        --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+
+    /* === THEME 2: DARK (MONOCHROME/SLATE) === */
+    .theme-dark {
+        --color-primary-from: #94a3b8;
+        --color-primary-via: #475569;
+        --color-primary-to: #1e293b;
+
+        --color-bg-main: #020617;
+        --color-bg-card: #0f172a;
+        --color-bg-hover: #1e293b;
+
+        --glass-bg: rgba(15, 23, 42, 0.8);
+        --glass-bg-strong: rgba(15, 23, 42, 0.95);
+        --shadow-glow: 0 0 20px rgba(148, 163, 184, 0.2);
+    }
+
+    /* === THEME 3: OCEAN (BLUE/CYAN) === */
+    .theme-ocean {
+        --color-primary-from: #0ea5e9;
+        --color-primary-via: #3b82f6;
+        --color-primary-to: #06b6d4;
+
+        --color-bg-main: #0c4a6e;
+        --color-bg-card: #075985;
+        --color-bg-hover: #0369a1;
+
+        --glass-bg: rgba(7, 89, 133, 0.7);
+        --glass-bg-strong: rgba(7, 89, 133, 0.95);
+        --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.4);
+    }
+
+    /* === THEME 4: SUNSET (ORANGE/RED) === */
+    .theme-sunset {
+        --color-primary-from: #f97316;
+        --color-primary-via: #ea580c;
+        --color-primary-to: #dc2626;
+
+        --color-bg-main: #431407;
+        --color-bg-card: #7c2d12;
+        --color-bg-hover: #9a3412;
+
+        --glass-bg: rgba(124, 45, 18, 0.7);
+        --glass-bg-strong: rgba(124, 45, 18, 0.95);
+        --shadow-glow: 0 0 20px rgba(249, 115, 22, 0.4);
+    }
+
+    /* === THEME 5: FOREST (GREEN/EMERALD) === */
+    .theme-forest {
+        --color-primary-from: #10b981;
+        --color-primary-via: #059669;
+        --color-primary-to: #047857;
+
+        --color-bg-main: #064e3b;
+        --color-bg-card: #065f46;
+        --color-bg-hover: #047857;
+
+        --glass-bg: rgba(6, 95, 70, 0.7);
+        --glass-bg-strong: rgba(6, 95, 70, 0.95);
+        --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.4);
     }
 
     * {
@@ -51,9 +114,11 @@
     }
 
     body {
-        @apply bg-slate-900 text-slate-50 antialiased;
+        @apply text-slate-50 antialiased transition-colors duration-500;
         font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        background-color: var(--color-bg-main);
+        /* Fallback */
+        background-image: linear-gradient(135deg, var(--color-bg-main) 0%, var(--color-bg-card) 100%);
         background-attachment: fixed;
     }
 }
@@ -67,18 +132,18 @@
     /* Glassmorphism Card */
     .glass {
         background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         border: 1px solid var(--glass-border);
         box-shadow: var(--glass-shadow);
     }
 
     .glass-strong {
-        background: rgba(30, 41, 59, 0.9);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        background: var(--glass-bg-strong);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
     }
 
     /* Gradient Text */

@@ -8,38 +8,23 @@ const AdminLogin = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!emailOrPhone || !password) {
-      toast.error("Please fill all fields");
-      return;
-    }
-    
     setLoading(true);
     try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/users/login`,
-        { emailOrPhone, password },
-        { withCredentials: true }
-      );
-      
-      const user = data?.data?.user;
-      if (!user) throw new Error("Invalid response");
+      const user = await login(emailOrPhone, password);
       
       if (user.role !== "admin") {
         toast.error("This login is for admin/vendors only");
         return;
       }
       
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
-      toast.success(`Welcome back, ${user.name || "Admin"}!`);
       navigate("/admin/dashboard");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Login failed");
+      // Toast is handled in AuthContext.login
     } finally {
       setLoading(false);
     }

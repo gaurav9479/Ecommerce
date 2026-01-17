@@ -1,32 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
+import { useCart } from '../Context/CartContext';
+import { useWishlist } from '../Context/WishlistContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const { user, setUser } = useAuth();
+  const { cartCount } = useCart();
+  const { wishlistItems } = useWishlist();
   const navigate = useNavigate();
-  const [cartCount, setCartCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    if (user) {
-      fetchCartCount();
-    }
-  }, [user]);
-
-  const fetchCartCount = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/cart`, { withCredentials: true });
-      const items = response.data.data?.items || [];
-      const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
-      setCartCount(totalCount);
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-    }
-  };
 
   const handleLogout = async () => {
     try {
@@ -82,7 +68,7 @@ const Navbar = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="input-field pr-10"
               />
-              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-400 hover:text-purple-300">
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-primary-from)] hover:text-[var(--color-primary-to)]">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -92,11 +78,23 @@ const Navbar = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-4">
+            {/* Theme Selection */}
+            <Link to="/themes" className="relative p-2 hover:scale-110 transition-transform" title="Change Theme">
+              <svg className="w-6 h-6 text-white hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              </svg>
+            </Link>
+
             {/* Wishlist */}
-            <Link to="/wishlist" className="p-2 hover:scale-110 transition-transform">
+            <Link to="/wishlist" className="relative p-2 hover:scale-110 transition-transform">
               <svg className="w-6 h-6 text-white hover:text-pink-500 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs flex items-center justify-center rounded-full">
+                  {wishlistItems.length}
+                </span>
+              )}
             </Link>
 
             {/* Cart */}
@@ -115,7 +113,7 @@ const Navbar = () => {
             {user ? (
               <div className="hidden md:flex items-center gap-3">
                 <div className="glass rounded-lg px-4 py-2">
-                  <span className="text-sm text-slate-300">Hi, <span className="font-semibold text-white">{user.Name}</span></span>
+                  <span className="text-sm text-slate-300">Hi, <span className="font-semibold text-white">{user.name}</span></span>
                 </div>
                 <button
                   onClick={handleLogout}
@@ -174,7 +172,7 @@ const Navbar = () => {
             )}
             {user ? (
               <>
-                <div className="text-white py-2">Hi, {user.Name}</div>
+                <div className="text-white py-2">Hi, {user.name}</div>
                 <button onClick={handleLogout} className="btn-secondary w-full">
                   Logout
                 </button>

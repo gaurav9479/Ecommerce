@@ -6,6 +6,7 @@ import { AuthProvider } from './Context/AuthContext.jsx'
 import { UserProvider } from './Context/User.Context.jsx'
 import { WishlistProvider } from './Context/WishlistContext.jsx'
 import { CartProvider } from './Context/CartContext.jsx'
+import { ThemeProvider } from './Context/ThemeContext.jsx'
 import { Toaster } from 'react-hot-toast'
 
 
@@ -18,8 +19,10 @@ createRoot(document.getElementById('root')).render(
       <WishlistProvider>
         <CartProvider>
           <UserProvider>
-            <App />
-            <Toaster position="top-center" reverseOrder={false} />
+            <ThemeProvider>
+              <App />
+              <Toaster position="top-center" reverseOrder={false} />
+            </ThemeProvider>
           </UserProvider>
         </CartProvider>
       </WishlistProvider>
