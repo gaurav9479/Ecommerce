@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useWishlist } from '../Context/WishlistContext';
+import { useCart } from '../Context/CartContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import StarRating from '../component/StarRating';
@@ -9,11 +11,14 @@ import AddReview from '../component/Products/AddReview';
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
   useEffect(() => {
     fetchProduct();
@@ -35,19 +40,24 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/cart/add`,
-        { productId: id, quantity },
-        { withCredentials: true }
-      );
-      toast.success(`Added ${quantity} item(s) to cart!`);
+      await addToCart(id, quantity);
     } catch (error) {
       if (error.response?.status === 401) {
-        toast.error('Please login to add to cart');
         navigate('/login');
-      } else {
-        toast.error(error.response?.data?.message || 'Failed to add to cart');
       }
+    }
+  };
+
+  const handleWishlistToggle = async () => {
+    setIsWishlistLoading(true);
+    try {
+      await toggleWishlist(id);
+    } catch (error) {
+      if (error.response?.status === 401) {
+        navigate('/login');
+      }
+    } finally {
+      setIsWishlistLoading(false);
     }
   };
 
@@ -136,8 +146,12 @@ const ProductDetail = () => {
                   <button onClick={handleAddToCart} className="btn-primary flex-1">
                     Add to Cart
                   </button>
-                  <button className="btn-outline">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <button 
+                    onClick={handleWishlistToggle}
+                    disabled={isWishlistLoading}
+                    className={`btn-outline p-3 ${isInWishlist(id) ? 'text-pink-500 border-pink-500' : 'text-slate-400 border-slate-700'}`}
+                  >
+                    <svg className={`w-6 h-6 ${isInWishlist(id) ? 'fill-pink-500' : 'fill-none'}`} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </button>

@@ -9,34 +9,18 @@ function Login() {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!emailOrPhone || !password) {
-      toast.error("Please enter email/phone and password");
-      return;
-    }
     setLoading(true);
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/users/login`,
-        { emailOrPhone, password },
-        { withCredentials: true }
-      );
+      const user = await login(emailOrPhone, password);
 
-      const user = res?.data?.data?.user;
-      if (!user) throw new Error("Invalid response from server");
-
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
-      toast.success(`Welcome back, ${user.name || "User"}!`);
-      
-      // Redirect based on role
-      navigate(user.role === "admin" ? "/admin/dashboard" : "/");
+      navigate(user.role === "admin" ? "/admin/dashboard" : "/products");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Login failed");
+
     } finally {
       setLoading(false);
     }

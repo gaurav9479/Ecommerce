@@ -19,13 +19,29 @@ const Shop = () => {
     page: Number(searchParams.get('page')) || 1
   });
 
-  const categories = ['smartphones', 'laptops', 'headphones', 'cameras', 'tablets', 'accessories'];
+  const categories = React.useMemo(() => ['smartphones', 'laptops', 'headphones', 'cameras', 'tablets', 'accessories', 'watches'], []);
+  
   const sortOptions = [
     { value: '-createdAt', label: 'Newest First' },
     { value: 'price', label: 'Price: Low to High' },
     { value: '-price', label: 'Price: High to Low' },
     { value: '-rating', label: 'Highest Rated' }
   ];
+
+  // Memoize grouped products to avoid re-filtering every render
+  const groupedProducts = React.useMemo(() => {
+    if (filters.category || filters.search) return null;
+    
+    const groups = {};
+    categories.forEach(cat => {
+      groups[cat] = products.filter(p => p.category === cat);
+    });
+    
+    const others = products.filter(p => !categories.includes(p.category));
+    if (others.length > 0) groups['others'] = others;
+    
+    return groups;
+  }, [products, filters.category, filters.search, categories]);
 
   useEffect(() => {
     fetchProducts();
@@ -35,6 +51,10 @@ const Shop = () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
+      // Increase limit for row view to show variety
+      if (!filters.search && !filters.category) {
+        params.append('limit', '50');
+      }
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params.append(key, value);
       });
@@ -79,9 +99,31 @@ const Shop = () => {
     <div className="min-h-screen bg-slate-900">
       {/* Header */}
       <div className="glass-strong border-b border-slate-700">
-        <div className="container-custom py-8">
-          <h1 className="text-4xl font-bold gradient-text mb-2">Shop All Products</h1>
-          <p className="text-slate-400">Discover our complete collection</p>
+        <div className="container-custom py-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="animate-slideUp">
+            <h1 className="text-4xl font-bold gradient-text mb-2">Shop All Products</h1>
+            <p className="text-slate-400">Discover our complete collection</p>
+          </div>
+          
+          <div className="w-full max-w-md animate-slideInRight">
+            <div className="relative group">
+              <input
+                type="text"
+                placeholder="Search for perfection..."
+                value={filters.search}
+                onChange={(e) => handleFilterChange('search', e.target.value)}
+                className="input-field pl-12 pr-4 py-4 bg-slate-800/50 backdrop-blur-xl border-slate-700/50 group-hover:border-purple-500/50 transition-all duration-300 shadow-lg shadow-purple-500/5"
+              />
+              <svg 
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-hover:text-purple-400 transition-colors"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -216,11 +258,65 @@ const Shop = () => {
               </div>
             ) : products.length > 0 ? (
               <>
-                <div className="grid-auto-fit">
-                  {products.map((product) => (
-                    <ProductCard key={product._id} product={product} />
-                  ))}
-                </div>
+                {filters.category || filters.search ? (
+                  /* Grid View for Filtered/Searched Results */
+                  <div className="grid-auto-fit">
+                    {products.map((product) => (
+                      <ProductCard key={product._id} product={product} />
+                    ))}
+                  </div>
+                ) : (
+                  /* Category Rows View for General Shop */
+                  <div className="space-y-16">
+                    {categories.map((cat) => {
+                      const categoryProducts = groupedProducts?.[cat] || [];
+                      if (categoryProducts.length === 0) return null;
+                      
+                      return (
+                        <div key={cat} className="animate-slideUp">
+                          <div className="flex items-center justify-between mb-6 group cursor-pointer" onClick={() => handleFilterChange('category', cat)}>
+                            <div className="flex items-center gap-3">
+                              <div className="w-1.5 h-8 gradient-bg rounded-full shadow-glow" />
+                              <h2 className="text-2xl font-bold text-white capitalize tracking-tight group-hover:gradient-text transition-all duration-300">
+                                {cat}
+                              </h2>
+                            </div>
+                            <span className="text-purple-400 text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                              View All →
+                            </span>
+                          </div>
+                          
+                          <div className="flex overflow-x-auto gap-6 pb-6 custom-scrollbar scroll-smooth snap-x">
+                            {categoryProducts.map((product) => (
+                              <div key={product._id} className="min-w-[280px] w-[280px] flex-shrink-0 snap-start">
+                                <ProductCard product={product} />
+                              </div>
+                            ))}
+                            {/* Empty space at the end */}
+                            <div className="min-w-[1px] w-1" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                    
+                    {/* Other Products not in main categories */}
+                    {groupedProducts?.others?.length > 0 && (
+                      <div className="animate-slideUp">
+                        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                          <div className="w-1.5 h-8 bg-slate-700 rounded-full" />
+                          More Discoveries
+                        </h2>
+                        <div className="flex overflow-x-auto gap-6 pb-6 custom-scrollbar snap-x">
+                          {groupedProducts.others.map((product) => (
+                            <div key={product._id} className="min-w-[280px] w-[280px] flex-shrink-0 snap-start">
+                              <ProductCard product={product} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Pagination */}
                 {pagination.pages > 1 && (
