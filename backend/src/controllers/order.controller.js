@@ -170,3 +170,134 @@ export const getAllOrders = asyncHandler(async (req, res) => {
         }
     }, "Orders fetched successfully"));
 });
+
+
+// ─── Vendor Analytics ─────────────────────────────────────────────────────────
+export const getAnalytics = asyncHandler(async (req, res) => {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now); thirtyDaysAgo.setDate(now.getDate() - 29);
+    const sixtyDaysAgo  = new Date(now); sixtyDaysAgo.setDate(now.getDate() - 59);
+    const startOfMonth  = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endOfLastMonth   = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    const [allOrders, products] = await Promise.all([
+        Order.find().populate('items.product', 'title category price').sort({ createdAt: 1 }),
+        Product.find({}, 'title price stock category compareCount rating numReviews')
+    ]);
+
+    // ── KPIs ──────────────────────────────────────────────────────────────────
+    const delivered = allOrders.filter(o => o.status === 'Delivered');
+    const thisMonth  = allOrders.filter(o => o.createdAt >= startOfMonth);
+    const lastMonth  = allOrders.filter(o => o.createdAt >= startOfLastMonth && o.createdAt <= endOfLastMonth);
+
+    const revenue       = delivered.reduce((s, o) => s + (o.totalAmount || 0), 0);
+    const revenueThis   = thisMonth.filter(o => o.status === 'Delivered').reduce((s, o) => s + o.totalAmount, 0);
+    const revenueLast   = lastMonth.filter(o => o.status === 'Delivered').reduce((s, o) => s + o.totalAmount, 0);
+    const revenueGrowth = revenueLast > 0 ? (((revenueThis - revenueLast) / revenueLast) * 100).toFixed(1) : null;
+    const ordersGrowth  = lastMonth.length > 0 ? (((thisMonth.length - lastMonth.length) / lastMonth.length) * 100).toFixed(1) : null;
+    const avgOrderValue = delivered.length > 0 ? Math.round(revenue / delivered.length) : 0;
+
+    // ── Revenue over last 30 days ──────────────────────────────────────────────
+    const revenueMap = {};
+    for (let i = 0; i < 30; i++) {
+        const d = new Date(thirtyDaysAgo); d.setDate(thirtyDaysAgo.getDate() + i);
+        const key = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+        revenueMap[key] = 0;
+    }
+    allOrders.filter(o => o.status === 'Delivered' && o.createdAt >= thirtyDaysAgo).forEach(o => {
+        const key = new Date(o.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+        if (revenueMap[key] !== undefined) revenueMap[key] += o.totalAmount || 0;
+    });
+    const revenueChart = Object.entries(revenueMap).map(([date, revenue]) => ({ date, revenue }));
+
+    // ── Orders timeline (last 30 days, all statuses) ───────────────────────────
+    const ordersMap = {};
+    Object.keys(revenueMap).forEach(k => { ordersMap[k] = 0; });
+    allOrders.filter(o => o.createdAt >= thirtyDaysAgo).forEach(o => {
+        const key = new Date(o.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+        if (ordersMap[key] !== undefined) ordersMap[key]++;
+    });
+    const ordersChart = Object.entries(ordersMap).map(([date, orders]) => ({ date, orders }));
+
+    // ── Order status breakdown ─────────────────────────────────────────────────
+    const statusCount = { Processing: 0, Shipped: 0, Delivered: 0, Cancelled: 0 };
+    allOrders.forEach(o => { if (statusCount[o.status] !== undefined) statusCount[o.status]++; });
+    const statusChart = Object.entries(statusCount).map(([name, value]) => ({ name, value }));
+
+    // ── Category revenue breakdown ─────────────────────────────────────────────
+    const catMap = {};
+    delivered.forEach(o => {
+        o.items.forEach(item => {
+            const cat = item.product?.category || 'Other';
+            catMap[cat] = (catMap[cat] || 0) + (item.price || item.product?.price || 0) * item.quantity;
+        });
+    });
+    const categoryChart = Object.entries(catMap)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 6)
+        .map(([name, value]) => ({ name, value: Math.round(value) }));
+
+    // ── Top 5 selling products ─────────────────────────────────────────────────
+    const productSales = {};
+    delivered.forEach(o => {
+        o.items.forEach(item => {
+            const id = item.product?._id?.toString();
+            if (!id) return;
+            if (!productSales[id]) productSales[id] = { name: item.product.title, units: 0, revenue: 0 };
+            productSales[id].units   += item.quantity;
+            productSales[id].revenue += (item.price || item.product.price) * item.quantity;
+        });
+    });
+    const topProducts = Object.values(productSales)
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 5)
+        .map(p => ({ ...p, revenue: Math.round(p.revenue) }));
+
+    // ── Inventory health ──────────────────────────────────────────────────────
+    const inventoryHealth = {
+        healthy: products.filter(p => p.stock > 10).length,
+        low:     products.filter(p => p.stock > 0 && p.stock <= 10).length,
+        out:     products.filter(p => p.stock === 0).length,
+    };
+
+    // ── Weekly revenue heatmap (last 12 weeks) ────────────────────────────────
+    const weekMap = {};
+    for (let i = 11; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(now.getDate() - i * 7);
+        const key = `W${d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}`;
+        weekMap[key] = 0;
+    }
+    delivered.forEach(o => {
+        const d = new Date(o.createdAt);
+        const weeksAgo = Math.floor((now - d) / (7 * 24 * 3600 * 1000));
+        if (weeksAgo < 12) {
+            const refDay = new Date(now); refDay.setDate(now.getDate() - weeksAgo * 7);
+            const key = `W${refDay.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}`;
+            if (weekMap[key] !== undefined) weekMap[key] += o.totalAmount || 0;
+        }
+    });
+    const weeklyChart = Object.entries(weekMap).map(([week, revenue]) => ({ week, revenue: Math.round(revenue) }));
+
+    res.status(200).json(new ApiResponse(200, {
+        kpis: {
+            totalRevenue: revenue,
+            totalOrders: allOrders.length,
+            avgOrderValue,
+            totalProducts: products.length,
+            revenueGrowth,
+            ordersGrowth,
+            thisMonthRevenue: revenueThis,
+            lastMonthRevenue: revenueLast,
+            conversionRate: allOrders.length > 0 ? ((delivered.length / allOrders.length) * 100).toFixed(1) : 0,
+        },
+        revenueChart,
+        ordersChart,
+        statusChart,
+        categoryChart,
+        topProducts,
+        inventoryHealth,
+        weeklyChart,
+    }, "Analytics fetched"));
+});
