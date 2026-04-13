@@ -163,3 +163,33 @@ export const getFeaturedProducts = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, products, "Featured products fetched"));
 });
+
+
+export const getFlashDeals = asyncHandler(async (req, res) => {
+    const limit = Number(req.query.limit) || 6;
+    const now = new Date();
+
+    const products = await Product.find({
+        'flashDeal.isActive': true,
+        'flashDeal.expiresAt': { $gt: now }
+    })
+        .sort('-discount -rating')
+        .limit(limit);
+
+    res.status(200).json(new ApiResponse(200, products, "Flash deals fetched"));
+});
+
+
+export const getRelatedProducts = asyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    if (!product) throw new ApiError(404, "Product not found");
+
+    const related = await Product.find({
+        category: product.category,
+        _id: { $ne: product._id }
+    })
+        .sort('-rating')
+        .limit(6);
+
+    res.status(200).json(new ApiResponse(200, related, "Related products fetched"));
+});
