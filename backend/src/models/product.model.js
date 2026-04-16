@@ -31,6 +31,29 @@ const productSchema = new mongoose.Schema({
     featured: {
         type: Boolean,
         default: false
+    },
+    brand: {
+        type: String,
+        default: ''
+    },
+    discount: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+    },
+    specifications: {
+        type: Map,
+        of: String,
+        default: {}
+    },
+    flashDeal: {
+        isActive: { type: Boolean, default: false },
+        expiresAt: { type: Date }
+    },
+    compareCount: {
+        type: Number,
+        default: 0
     }
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } })
 

@@ -53,7 +53,22 @@ const orderSchema = new Schema(
             lat: Number,
             lng: Number
         },
-        deliveredAt: Date
+        deliveredAt: Date,
+        trackingNumber: {
+            type: String,
+            default: () => 'TRK' + Math.random().toString(36).substr(2, 9).toUpperCase()
+        },
+        estimatedDelivery: {
+            type: Date
+        },
+        couponCode: {
+            type: String,
+            default: ''
+        },
+        discountAmount: {
+            type: Number,
+            default: 0
+        }
     },
     { timestamps: true }
 )
