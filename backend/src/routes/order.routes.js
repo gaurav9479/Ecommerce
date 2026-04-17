@@ -5,7 +5,8 @@ import {
     getUserOrders,
     getOrderById,
     updateOrderStatus,
-    getAllOrders
+    getAllOrders,
+    getAnalytics
 } from "../controllers/order.controller.js";
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.get("/my-orders", getUserOrders);
 router.get("/:orderId", getOrderById);
 router.patch("/:orderId/status", authorizeRoles("admin"), updateOrderStatus);
 router.get("/admin/all", authorizeRoles("admin"), getAllOrders);
+router.get("/admin/analytics", authorizeRoles("admin"), getAnalytics);
 
 export default router;
