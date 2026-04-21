@@ -10,6 +10,9 @@ import Payment from './Pages/Payment';
 import Wishlist from './Pages/Wishlist';
 import CheckoutDetails from './Pages/CheckoutDetails';
 import ThemePage from './Pages/ThemePage';
+import Compare from './Pages/Compare';
+import OrderTracking from './Pages/OrderTracking';
+import NotFound from './Pages/NotFound';
 import AdminLayout from './Admin/adminlayout';
 import AdminDashboard from './Admin/AdminDashboard';
 import AdminLogin from './Admin/AdminLogin';
@@ -18,6 +21,8 @@ import AdminProductForm from './Admin/AdminProductForm';
 import UserDashboard from './Pages/UserDashboard';
 
 import { PrivateRoute } from './Routes/ProtectedRoutes';
+import { CompareProvider } from './Context/CompareContext';
+import { NotificationProvider } from './Context/NotificationContext';
 
 const router = createBrowserRouter([
   {
@@ -66,12 +71,24 @@ const router = createBrowserRouter([
           {
             path: 'dashboard',
             element: <UserDashboard />
+          },
+          {
+            path: 'compare',
+            element: <Compare />
+          },
+          {
+            path: 'order-tracking/:orderId',
+            element: <OrderTracking />
           }
         ]
       },
       {
         path: 'themes',
         element: <ThemePage />
+      },
+      {
+        path: '*',
+        element: <NotFound />
       }
     ]
   },
@@ -100,7 +117,13 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <NotificationProvider>
+      <CompareProvider>
+        <RouterProvider router={router} />
+      </CompareProvider>
+    </NotificationProvider>
+  );
 }
 
 export default App;
