@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import productRoutes from "./routes/product.routes.js";
-import authRoutes from "./routes/auth.routes.js";
+
 import cartRoutes from "./routes/cart.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import orderRoutes from "./routes/order.routes.js";
@@ -13,21 +13,26 @@ import couponRoutes from "./routes/coupon.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
-    
+
 
 const allowedOrigins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5174",
-    process.env.CORS_ORIGIN
+    "https://*.vercel.app",
+    process.env.CORS_ORIGIN,
+    process.env.FRONTEND_URL
 ].filter(Boolean);
 
 app.use((req, res, next) => {
     const origin = req.headers.origin;
     console.log(`CORS Check: Method=${req.method}, Origin=${origin}`);
 
+    // Check if origin is in allowed list or matches patterns
+    const isAllowed = allowedOrigins.includes(origin) ||
+        /https:\/\/.*\.vercel\.app$/.test(origin);
 
-    if (allowedOrigins.includes(origin)) {
+    if (isAllowed) {
         res.setHeader("Access-Control-Allow-Origin", origin);
     } else {
         res.setHeader("Access-Control-Allow-Origin", allowedOrigins[0] || "http://localhost:5173");
@@ -49,7 +54,7 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-app.use("/api/v1/auth", authRoutes);
+
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/products", productRoutes);
