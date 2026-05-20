@@ -176,10 +176,10 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 export const getAnalytics = asyncHandler(async (req, res) => {
     const now = new Date();
     const thirtyDaysAgo = new Date(now); thirtyDaysAgo.setDate(now.getDate() - 29);
-    const sixtyDaysAgo  = new Date(now); sixtyDaysAgo.setDate(now.getDate() - 59);
-    const startOfMonth  = new Date(now.getFullYear(), now.getMonth(), 1);
+    const sixtyDaysAgo = new Date(now); sixtyDaysAgo.setDate(now.getDate() - 59);
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const endOfLastMonth   = new Date(now.getFullYear(), now.getMonth(), 0);
+    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
 
     const [allOrders, products] = await Promise.all([
         Order.find().populate('items.product', 'title category price').sort({ createdAt: 1 }),
@@ -188,14 +188,14 @@ export const getAnalytics = asyncHandler(async (req, res) => {
 
     // ── KPIs ──────────────────────────────────────────────────────────────────
     const delivered = allOrders.filter(o => o.status === 'Delivered');
-    const thisMonth  = allOrders.filter(o => o.createdAt >= startOfMonth);
-    const lastMonth  = allOrders.filter(o => o.createdAt >= startOfLastMonth && o.createdAt <= endOfLastMonth);
+    const thisMonth = allOrders.filter(o => o.createdAt >= startOfMonth);
+    const lastMonth = allOrders.filter(o => o.createdAt >= startOfLastMonth && o.createdAt <= endOfLastMonth);
 
-    const revenue       = delivered.reduce((s, o) => s + (o.totalAmount || 0), 0);
-    const revenueThis   = thisMonth.filter(o => o.status === 'Delivered').reduce((s, o) => s + o.totalAmount, 0);
-    const revenueLast   = lastMonth.filter(o => o.status === 'Delivered').reduce((s, o) => s + o.totalAmount, 0);
+    const revenue = delivered.reduce((s, o) => s + (o.totalAmount || 0), 0);
+    const revenueThis = thisMonth.filter(o => o.status === 'Delivered').reduce((s, o) => s + o.totalAmount, 0);
+    const revenueLast = lastMonth.filter(o => o.status === 'Delivered').reduce((s, o) => s + o.totalAmount, 0);
     const revenueGrowth = revenueLast > 0 ? (((revenueThis - revenueLast) / revenueLast) * 100).toFixed(1) : null;
-    const ordersGrowth  = lastMonth.length > 0 ? (((thisMonth.length - lastMonth.length) / lastMonth.length) * 100).toFixed(1) : null;
+    const ordersGrowth = lastMonth.length > 0 ? (((thisMonth.length - lastMonth.length) / lastMonth.length) * 100).toFixed(1) : null;
     const avgOrderValue = delivered.length > 0 ? Math.round(revenue / delivered.length) : 0;
 
     // ── Revenue over last 30 days ──────────────────────────────────────────────
@@ -245,7 +245,7 @@ export const getAnalytics = asyncHandler(async (req, res) => {
             const id = item.product?._id?.toString();
             if (!id) return;
             if (!productSales[id]) productSales[id] = { name: item.product.title, units: 0, revenue: 0 };
-            productSales[id].units   += item.quantity;
+            productSales[id].units += item.quantity;
             productSales[id].revenue += (item.price || item.product.price) * item.quantity;
         });
     });
@@ -257,8 +257,8 @@ export const getAnalytics = asyncHandler(async (req, res) => {
     // ── Inventory health ──────────────────────────────────────────────────────
     const inventoryHealth = {
         healthy: products.filter(p => p.stock > 10).length,
-        low:     products.filter(p => p.stock > 0 && p.stock <= 10).length,
-        out:     products.filter(p => p.stock === 0).length,
+        low: products.filter(p => p.stock > 0 && p.stock <= 10).length,
+        out: products.filter(p => p.stock === 0).length,
     };
 
     // ── Weekly revenue heatmap (last 12 weeks) ────────────────────────────────

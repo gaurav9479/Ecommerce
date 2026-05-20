@@ -9,7 +9,7 @@ function Login() {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, loginRecruiter } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -17,10 +17,21 @@ function Login() {
     setLoading(true);
     try {
       const user = await login(emailOrPhone, password);
-
       navigate(user.role === "admin" ? "/admin/dashboard" : "/products");
     } catch (err) {
 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRecruiterLogin = async (role) => {
+    setLoading(true);
+    try {
+      const user = await loginRecruiter(role);
+      navigate(user.role === "admin" ? "/admin/dashboard" : "/products");
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -74,6 +85,31 @@ function Login() {
             Register
           </Link>
         </p>
+
+        <div className="relative flex py-4 items-center">
+          <div className="flex-grow border-t border-darkPlum"></div>
+          <span className="flex-shrink mx-4 text-gray-300 text-xs font-semibold uppercase tracking-wider">Recruiter Demo Mode</span>
+          <div className="flex-grow border-t border-darkPlum"></div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => handleRecruiterLogin("user")}
+            disabled={loading}
+            className="py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm transition shadow-md hover:shadow-lg disabled:opacity-50"
+          >
+            🔑 Customer Demo
+          </button>
+          <button
+            type="button"
+            onClick={() => handleRecruiterLogin("admin")}
+            disabled={loading}
+            className="py-2.5 px-4 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm transition shadow-md hover:shadow-lg disabled:opacity-50"
+          >
+            🏪 Vendor Demo
+          </button>
+        </div>
       </div>
     </div>
   );

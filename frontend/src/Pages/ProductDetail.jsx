@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useWishlist } from '../Context/WishlistContext';
 import { useCart } from '../Context/CartContext';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import StarRating from '../component/StarRating';
 import LoadingSkeleton from '../component/LoadingSkeleton';
 import AddReview from '../component/Products/AddReview';
+import ProductCard from '../component/Products/ProductCard';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -19,6 +20,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
   const [isWishlistLoading, setIsWishlistLoading] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   useEffect(() => {
     fetchProduct();
@@ -29,9 +31,14 @@ const ProductDetail = () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/products/${id}`);
       setProduct(response.data.data);
+      // Fetch related after product
+      try {
+        const rel = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/products/${id}/related`);
+        setRelatedProducts(rel.data.data || []);
+      } catch {}
     } catch (error) {
       console.error('Error fetching product:', error);
-       toast.error('Product not found');
+      toast.error('Product not found');
       navigate('/products');
     } finally {
       setLoading(false);
@@ -266,6 +273,25 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-16 animate-slideUp">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold gradient-text">You May Also Like</h2>
+              <Link to={`/products?category=${product.category}`} className="text-purple-400 hover:text-purple-300 text-sm font-semibold">
+                View All →
+              </Link>
+            </div>
+            <div className="flex overflow-x-auto gap-6 pb-4 custom-scrollbar snap-x">
+              {relatedProducts.map((rp) => (
+                <div key={rp._id} className="min-w-[260px] w-[260px] flex-shrink-0 snap-start">
+                  <ProductCard product={rp} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
