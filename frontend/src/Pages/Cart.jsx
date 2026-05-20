@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import CouponInput from '../component/CouponInput';
 
 const Cart = () => {
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -64,6 +66,13 @@ const Cart = () => {
         if (!cart || !cart.items) return 0;
         return cart.items.reduce((total, item) => total + (item.product?.price || 0) * item.quantity, 0);
     };
+
+    const calculateDiscount = () => {
+        if (!appliedCoupon) return 0;
+        return Math.round(calculateTotal() * (appliedCoupon.discountPercent / 100));
+    };
+
+    const finalTotal = () => Math.max(0, calculateTotal() - calculateDiscount());
 
     if (loading) return <div className="text-center mt-10">Loading Cart...</div>;
 
@@ -167,24 +176,32 @@ const Cart = () => {
                                     <div className="h-px flex-1 bg-slate-700/50 ml-2" />
                                 </h2>
                                 
-                                    <div className="space-y-4 mb-8">
+                                    <div className="space-y-4 mb-4">
                                         <div className="flex justify-between text-slate-400">
                                             <span>Subtotal</span>
                                             <span className="text-white font-medium">₹{calculateTotal().toLocaleString()}</span>
                                         </div>
+                                        {appliedCoupon && (
+                                            <div className="flex justify-between text-green-400">
+                                                <span>Discount ({appliedCoupon.code})</span>
+                                                <span>-₹{calculateDiscount().toLocaleString()}</span>
+                                            </div>
+                                        )}
                                         <div className="flex justify-between text-slate-400">
                                             <span>Shipping</span>
-                                            <span className="text-success font-medium">Free</span>
-                                        </div>
-                                        <div className="flex justify-between text-slate-400">
-                                            <span>Tax</span>
-                                            <span className="text-white font-medium">₹0.00</span>
+                                            <span className="text-green-400 font-medium">Free</span>
                                         </div>
                                     <div className="h-px bg-slate-700/50 my-4" />
                                     <div className="flex justify-between text-xl font-bold">
                                         <span className="text-white">Total</span>
-                                        <span className="gradient-text">₹{calculateTotal().toLocaleString()}</span>
+                                        <span className="gradient-text">₹{finalTotal().toLocaleString()}</span>
                                     </div>
+                                </div>
+
+                                {/* Coupon */}
+                                <div className="mb-6">
+                                    <p className="text-slate-400 text-sm font-semibold mb-2">🎟️ Have a coupon?</p>
+                                    <CouponInput orderAmount={calculateTotal()} onCouponApplied={setAppliedCoupon} />
                                 </div>
 
                                 <button 
