@@ -22,6 +22,10 @@ const orderSchema = new Schema(
                 price: {
                     type: Number,
                     required: true
+                },
+                title: {
+                    type: String,
+                    default: ""   // Snapshot at order time — survives product deletion
                 }
             }
         ],
@@ -37,14 +41,39 @@ const orderSchema = new Schema(
             type: String,
             required: true
         },
+        // ── Full 8-stage order lifecycle ────────────────────────────────────────
         status: {
             type: String,
-            enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
-            default: 'Processing'
+            enum: [
+                'Pending',          // Created but payment not yet initiated
+                'PaymentPending',   // Stripe intent created, awaiting card auth
+                'Confirmed',        // Payment succeeded
+                'Packed',           // Warehouse has packed the order
+                'Shipped',          // In transit
+                'Delivered',        // Delivered to customer
+                'Cancelled',        // Cancelled (stock restored)
+                'Returned'          // Customer returned (stock restored)
+            ],
+            default: 'Confirmed'
         },
+        // ── Payment tracking ────────────────────────────────────────────────────
+        paymentStatus: {
+            type: String,
+            enum: ['Pending', 'Paid', 'Failed', 'Refunded'],
+            default: 'Paid'
+        },
+        // ────────────────────────────────────────────────────────────────────────
         totalAmount: {
             type: Number,
             required: true
+        },
+        discountAmount: {
+            type: Number,
+            default: 0
+        },
+        couponCode: {
+            type: String,
+            default: ''
         },
         timeSlot: {
             type: String
@@ -53,7 +82,14 @@ const orderSchema = new Schema(
             lat: Number,
             lng: Number
         },
+        // Status transition timestamps
+        confirmedAt: Date,
+        packedAt: Date,
+        shippedAt: Date,
         deliveredAt: Date,
+        cancelledAt: Date,
+        returnedAt: Date,
+
         trackingNumber: {
             type: String,
             default: () => 'TRK' + Math.random().toString(36).substr(2, 9).toUpperCase()
@@ -61,15 +97,12 @@ const orderSchema = new Schema(
         estimatedDelivery: {
             type: Date
         },
-        couponCode: {
+        cancellationReason: {
             type: String,
             default: ''
-        },
-        discountAmount: {
-            type: Number,
-            default: 0
         }
     },
     { timestamps: true }
 )
-export const Orders = mongoose.model("Orders", orderSchema)
+
+export const Orders = mongoose.model("Orders", orderSchema);

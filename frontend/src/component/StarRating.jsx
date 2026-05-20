@@ -15,7 +15,7 @@ const StarRating = ({ rating, size = 'md', showCount = false, count = 0, interac
 
   return (
     <div className="flex items-center gap-2">
-      <div className="star-rating">
+      <div className="flex items-center gap-0.5">
         {[...Array(5)].map((_, index) => (
           <svg
             key={index}
