@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
     category: { type: String, required: true },
     image: { type: [String], required: true },
 
-    // ── Production-grade dual-stock inventory model ──────────────────────────
+
     totalStock: {
         type: Number,
         default: 0,
@@ -40,12 +40,12 @@ const productSchema = new mongoose.Schema({
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
 
-// availableStock: what customers can actually purchase right now
+
 productSchema.virtual('availableStock').get(function () {
     return Math.max(0, (this.totalStock || 0) - (this.reservedStock || 0));
 });
 
-// stock: backward-compatible alias → no frontend code changes required
+
 productSchema.virtual('stock').get(function () {
     return this.availableStock;
 });

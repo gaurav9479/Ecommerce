@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 const NotFound = () => {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-            {/* Background blobs */}
+
             <div className="absolute w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float top-20 left-10" />
             <div className="absolute w-80 h-80 bg-pink-500/10 rounded-full blur-3xl animate-float bottom-20 right-10" style={{ animationDelay: '1.5s' }} />
 
             <div className="text-center space-y-8 animate-bounceIn relative z-10">
-                {/* 404 */}
+
                 <div className="relative">
                     <h1 className="text-[12rem] font-black leading-none gradient-text opacity-20 select-none">
                         404
@@ -37,7 +37,7 @@ const NotFound = () => {
                     </Link>
                 </div>
 
-                {/* Floating stars */}
+
                 {[...Array(6)].map((_, i) => (
                     <div
                         key={i}

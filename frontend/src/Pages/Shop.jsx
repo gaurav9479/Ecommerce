@@ -111,7 +111,7 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen bg-slate-900">
-      {/* Header */}
+
       <div className="glass-strong border-b border-slate-700">
         <div className="container-custom py-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="animate-slideUp">
@@ -143,7 +143,7 @@ const Shop = () => {
 
       <div className="container-custom py-8">
         <div className="grid lg:grid-cols-4 gap-8">
-          {/* Filters Sidebar */}
+
           <aside className="lg:col-span-1">
             <div className="glass rounded-xl p-6 sticky top-24 space-y-6">
               <div className="flex items-center justify-between mb-4">
@@ -156,7 +156,7 @@ const Shop = () => {
                 </button>
               </div>
 
-              {/* Search */}
+
               <div>
                 <label className="block text-sm font-semibold text-slate-300 mb-2">Search</label>
                 <input
@@ -168,7 +168,7 @@ const Shop = () => {
                 />
               </div>
 
-              {/* Category */}
+
               <div>
                 <label className="block text-sm font-semibold text-slate-300 mb-3">Category</label>
                 <div className="space-y-2">
@@ -201,7 +201,7 @@ const Shop = () => {
                 </div>
               </div>
 
-              {/* Price Range */}
+
               <div>
                 <label className="block text-sm font-semibold text-slate-300 mb-3">Price Range</label>
                 <div className="flex gap-2">
@@ -222,7 +222,7 @@ const Shop = () => {
                 </div>
               </div>
 
-              {/* Rating */}
+
               <div>
                 <label className="block text-sm font-semibold text-slate-300 mb-3">Minimum Rating</label>
                 <div className="space-y-2">
@@ -245,9 +245,9 @@ const Shop = () => {
             </div>
           </aside>
 
-          {/* Products Grid */}
+
           <main className="lg:col-span-3">
-            {/* Sort and Results Count */}
+
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
               <p className="text-slate-400">
                 {pagination.total ? `${pagination.total} products found` : 'Loading...'}
@@ -265,7 +265,7 @@ const Shop = () => {
               </select>
             </div>
 
-            {/* Products */}
+
             {loading ? (
               <div className="grid-auto-fit">
                 <LoadingSkeleton variant="product" count={12} />
@@ -273,14 +273,14 @@ const Shop = () => {
             ) : products.length > 0 ? (
               <>
                 {filters.category || filters.search ? (
-                  /* Grid View for Filtered/Searched Results */
+
                   <div className="grid-auto-fit">
                     {products.map((product) => (
                       <ProductCard key={product._id} product={product} />
                     ))}
                   </div>
                 ) : (
-                  /* Category Rows View for General Shop */
+
                   <div className="space-y-16">
                     {categories.map((cat) => {
                       const categoryProducts = groupedProducts?.[cat] || [];
@@ -306,14 +306,14 @@ const Shop = () => {
                                 <ProductCard product={product} />
                               </div>
                             ))}
-                            {/* Empty space at the end */}
+
                             <div className="min-w-[1px] w-1" />
                           </div>
                         </div>
                       );
                     })}
                     
-                    {/* Other Products not in main categories */}
+
                     {groupedProducts?.others?.length > 0 && (
                       <div className="animate-slideUp">
                         <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
@@ -332,7 +332,7 @@ const Shop = () => {
                   </div>
                 )}
 
-                {/* Pagination */}
+
                 {pagination.pages > 1 && (
                   <div className="flex justify-center gap-2 mt-12">
                     <button

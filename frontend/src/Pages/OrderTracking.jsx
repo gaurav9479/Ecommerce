@@ -18,7 +18,7 @@ const OrderTracking = () => {
     return (
         <div className="min-h-screen py-16">
             <div className="container-custom max-w-3xl">
-                {/* Header */}
+
                 <div className="text-center mb-14 animate-slideUp">
                     <h1 className="text-4xl font-bold gradient-text mb-3">Order Tracking</h1>
                     {orderId && (
@@ -30,7 +30,7 @@ const OrderTracking = () => {
                     )}
                 </div>
 
-                {/* Estimated Delivery */}
+
                 <div className="glass rounded-2xl p-6 mb-10 text-center animate-slideUp">
                     <p className="text-slate-400 text-sm mb-1">Estimated Delivery</p>
                     <p className="text-2xl font-bold text-white">
@@ -41,10 +41,10 @@ const OrderTracking = () => {
                     <p className="text-green-400 text-sm mt-1 font-semibold">🚀 On Track</p>
                 </div>
 
-                {/* Stepper */}
+
                 <div className="glass rounded-2xl p-8 animate-slideUp">
                     <div className="relative">
-                        {/* Progress line */}
+
                         <div className="absolute left-8 top-8 bottom-8 w-0.5 bg-slate-700 rounded-full" />
                         <div
                             className="absolute left-8 top-8 w-0.5 bg-gradient-to-b rounded-full transition-all duration-1000"
@@ -66,7 +66,7 @@ const OrderTracking = () => {
                                         className={`flex items-start gap-6 animate-slideInLeft`}
                                         style={{ animationDelay: `${index * 100}ms` }}
                                     >
-                                        {/* Icon circle */}
+
                                         <div className={`relative flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-500 ${
                                             isCurrent
                                                 ? 'gradient-bg shadow-glow neon-glow scale-110'
@@ -80,7 +80,7 @@ const OrderTracking = () => {
                                             )}
                                         </div>
 
-                                        {/* Content */}
+
                                         <div className={`flex-1 pt-3 ${!isCompleted ? 'opacity-40' : ''}`}>
                                             <div className="flex items-center gap-3 mb-1">
                                                 <h3 className={`text-lg font-bold ${isCurrent ? 'gradient-text' : isCompleted ? 'text-white' : 'text-slate-500'}`}>
@@ -102,7 +102,7 @@ const OrderTracking = () => {
                     </div>
                 </div>
 
-                {/* Tracking number */}
+
                 <div className="mt-6 glass rounded-xl p-4 text-center">
                     <p className="text-slate-400 text-sm">Tracking Number</p>
                     <p className="text-white font-mono font-bold text-lg tracking-widest gradient-text">

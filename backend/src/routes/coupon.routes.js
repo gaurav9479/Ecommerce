@@ -3,10 +3,10 @@ import { validateCoupon, createCoupon, getAllCoupons, toggleCoupon, deleteCoupon
 
 const router = express.Router();
 
-// Public
+
 router.post("/validate", validateCoupon);
 
-// Admin-only (you can add admin middleware here if needed)
+
 router.post("/", createCoupon);
 router.get("/", getAllCoupons);
 router.patch("/:id/toggle", toggleCoupon);

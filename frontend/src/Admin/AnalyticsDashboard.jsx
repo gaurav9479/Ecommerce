@@ -21,11 +21,11 @@ const PALETTE = {
 const PIE_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
 const CAT_COLORS = ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#3b82f6'];
 
-// ── Formatters ─────────────────────────────────────────────────────────────────
+
 const fmtINR = (v) => v >= 100000 ? `₹${(v / 100000).toFixed(1)}L` : v >= 1000 ? `₹${(v / 1000).toFixed(1)}K` : `₹${v}`;
 const fmtINRFull = (v) => `₹${Number(v || 0).toLocaleString('en-IN')}`;
 
-// ── Sub-components ──────────────────────────────────────────────────────────────
+
 const KPICard = ({ label, value, sub, icon, growth, color = PALETTE.primary }) => {
     const up = Number(growth) > 0;
     const neutral = growth === null || growth === undefined;
@@ -68,7 +68,7 @@ const ChartCard = ({ title, subtitle, children, className = '' }) => (
     </div>
 );
 
-// Custom tooltip
+
 const CustomTooltip = ({ active, payload, label, formatter }) => {
     if (!active || !payload?.length) return null;
     return (
@@ -81,7 +81,7 @@ const CustomTooltip = ({ active, payload, label, formatter }) => {
     );
 };
 
-// ── Mock data for empty states ────────────────────────────────────────────────────
+
 const genMockRevenue = () => {
     const data = []; let base = 12000;
     for (let i = 29; i >= 0; i--) {
@@ -170,7 +170,7 @@ const AnalyticsDashboard = () => {
     return (
         <div className="p-5 space-y-6 animate-fadeIn">
 
-            {/* Demo banner */}
+
             {usingMock && (
                 <div className="rounded-lg px-4 py-2.5 flex items-center gap-2 text-xs" style={{ backgroundColor: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}>
                     <span>⚠️</span>
@@ -178,7 +178,7 @@ const AnalyticsDashboard = () => {
                 </div>
             )}
 
-            {/* ── KPI Cards ── */}
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <KPICard
                     label="Total Revenue"
@@ -214,7 +214,7 @@ const AnalyticsDashboard = () => {
                 />
             </div>
 
-            {/* ── Revenue / Orders chart ── */}
+
             <div style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }} className="rounded-xl p-5">
                 <div className="flex items-center justify-between mb-5">
                     <div>
@@ -264,10 +264,10 @@ const AnalyticsDashboard = () => {
                 </ResponsiveContainer>
             </div>
 
-            {/* ── Row 2: Status Pie + Category Bar ── */}
+
             <div className="grid md:grid-cols-2 gap-4">
 
-                {/* Order Status Donut */}
+
                 <ChartCard title="🔵 Order Status Breakdown" subtitle="All-time distribution">
                     <div className="flex items-center gap-4">
                         <ResponsiveContainer width="55%" height={180}>
@@ -307,7 +307,7 @@ const AnalyticsDashboard = () => {
                     </div>
                 </ChartCard>
 
-                {/* Category Revenue Bar */}
+
                 <ChartCard title="📂 Revenue by Category" subtitle="Delivered orders only">
                     <ResponsiveContainer width="100%" height={180}>
                         <BarChart data={categoryChart} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
@@ -322,10 +322,10 @@ const AnalyticsDashboard = () => {
                 </ChartCard>
             </div>
 
-            {/* ── Row 3: Top Products Table + Inventory ── */}
+
             <div className="grid md:grid-cols-3 gap-4">
 
-                {/* Top Products */}
+
                 <div className="md:col-span-2" style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
                     <div className="p-5">
                         <SectionHeader title="🏆 Top Selling Products" subtitle="By total revenue generated" />
@@ -368,7 +368,7 @@ const AnalyticsDashboard = () => {
                     </div>
                 </div>
 
-                {/* Inventory Health */}
+
                 <div className="space-y-4">
                     <ChartCard title="📦 Inventory Health" subtitle="Current stock levels">
                         <div className="space-y-3 mt-1">
@@ -397,7 +397,7 @@ const AnalyticsDashboard = () => {
                         </div>
                     </ChartCard>
 
-                    {/* Quick stats */}
+
                     <div style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }} className="rounded-xl p-4 space-y-3">
                         <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Quick Stats</p>
                         {[
@@ -414,7 +414,7 @@ const AnalyticsDashboard = () => {
                 </div>
             </div>
 
-            {/* ── Row 4: Weekly Revenue Bar ── */}
+
             <ChartCard title="📅 Weekly Revenue — Last 12 Weeks" subtitle="Useful for spotting seasonal patterns">
                 <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={weeklyChart} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>

@@ -52,7 +52,7 @@ const ProductCard = ({ product }) => {
       <Link to={`/product/${product._id}`} className="block group">
         <div className="card-product flex flex-col h-full">
 
-          {/* Image container */}
+
           <div className="relative overflow-hidden" style={{ backgroundColor: 'var(--color-surface-2)' }}>
             <img
               src={imageUrl}
@@ -62,7 +62,7 @@ const ProductCard = ({ product }) => {
               className="w-full h-52 object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
-            {/* Wishlist button */}
+
             <button
               onClick={handleWishlist}
               className="absolute top-2.5 right-2.5 w-8 h-8 flex items-center justify-center rounded-full transition-all duration-200"
@@ -76,7 +76,7 @@ const ProductCard = ({ product }) => {
               </svg>
             </button>
 
-            {/* Badges */}
+
             <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
               {product.discount > 0 && (
                 <span className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded" style={{ backgroundColor: '#dc2626' }}>
@@ -95,7 +95,7 @@ const ProductCard = ({ product }) => {
               )}
             </div>
 
-            {/* Hover actions */}
+
             <div className="absolute bottom-0 inset-x-0 flex gap-1 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200" style={{ backgroundColor: 'rgba(17,24,39,0.9)' }}>
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowQuickView(true); }}
@@ -117,7 +117,7 @@ const ProductCard = ({ product }) => {
             </div>
           </div>
 
-          {/* Product info */}
+
           <div className="p-3 flex flex-col gap-2 flex-1">
             {product.brand && (
               <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--color-primary)' }}>
@@ -133,7 +133,7 @@ const ProductCard = ({ product }) => {
               <StarRating rating={product.rating} showCount count={product.numReviews} size="sm" />
             )}
 
-            {/* Price */}
+
             <div className="flex items-baseline gap-2 mt-auto pt-1">
               <span className="text-base font-bold" style={{ color: 'var(--color-text)' }}>
                 ₹{(discountedPrice || product.price)?.toLocaleString()}
@@ -156,7 +156,7 @@ const ProductCard = ({ product }) => {
               </p>
             )}
 
-            {/* Actions */}
+
             <div className="flex gap-2 pt-1">
               <button
                 onClick={handleAddToCart}

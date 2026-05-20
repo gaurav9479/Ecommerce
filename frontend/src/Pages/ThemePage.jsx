@@ -35,7 +35,7 @@ const ThemePage = () => {
                   : 'border border-slate-700 hover:border-purple-500/50'
               }`}
             >
-              {/* Theme Preview Block */}
+
               <div 
                 className="h-32 w-full transition-transform duration-500 group-hover:scale-110"
                 style={{ 

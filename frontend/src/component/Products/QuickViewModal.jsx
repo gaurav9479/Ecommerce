@@ -29,12 +29,12 @@ const QuickViewModal = ({ product, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={e => e.target === e.currentTarget && onClose()}>
-            {/* Backdrop */}
+
             <div className="absolute inset-0 bg-black/60 animate-fadeIn" />
 
-            {/* Modal */}
+
             <div className="relative max-w-xl w-full rounded-xl overflow-hidden animate-bounceIn z-10 shadow-2xl" style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
-                {/* Close */}
+
                 <button onClick={onClose} className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded text-xs font-bold transition-colors"
                     style={{ backgroundColor: 'var(--color-surface-2)', color: 'var(--color-text-muted)' }}
                     onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--color-error)'; e.currentTarget.style.color = 'white'; }}
@@ -42,7 +42,7 @@ const QuickViewModal = ({ product, onClose }) => {
                 >✕</button>
 
                 <div className="grid sm:grid-cols-2">
-                    {/* Image */}
+
                     <div className="relative" style={{ backgroundColor: 'var(--color-surface-2)' }}>
                         <img
                             src={product.image?.[0] || 'https://placehold.co/400x400/1f2937/6366f1'}
@@ -56,14 +56,14 @@ const QuickViewModal = ({ product, onClose }) => {
                         )}
                     </div>
 
-                    {/* Info */}
+
                     <div className="p-5 space-y-3">
                         {product.brand && <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--color-primary)' }}>{product.brand}</p>}
                         <h2 className="text-base font-bold leading-snug" style={{ color: 'var(--color-text)' }}>{product.title}</h2>
 
                         {product.rating > 0 && <StarRating rating={product.rating} showCount count={product.numReviews} size="sm" />}
 
-                        {/* Price */}
+
                         <div className="flex items-baseline gap-2">
                             <span className="text-xl font-black" style={{ color: 'var(--color-text)' }}>
                                 ₹{(discountedPrice || product.price)?.toLocaleString()}
@@ -80,14 +80,14 @@ const QuickViewModal = ({ product, onClose }) => {
                             {product.description?.slice(0, 120)}{product.description?.length > 120 ? '...' : ''}
                         </p>
 
-                        {/* Stock */}
+
                         <div>
                             {product.stock > 0
                                 ? <span className="badge badge-success">In Stock</span>
                                 : <span className="badge badge-error">Out of Stock</span>}
                         </div>
 
-                        {/* Actions */}
+
                         <div className="space-y-2 pt-1">
                             {product.stock > 0 && (
                                 <button onClick={handleAddToCart} className="btn-primary w-full text-sm">Add to Cart</button>

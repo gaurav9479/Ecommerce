@@ -28,7 +28,7 @@ const Home = () => {
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg)' }}>
 
-            {/* ── Hero Banner ── */}
+
             <section style={{ backgroundColor: 'var(--color-surface)', borderBottom: '1px solid var(--color-border)' }}>
                 <div className="container-custom py-10 md:py-16">
                     <div className="flex flex-col md:flex-row items-center gap-8">
@@ -63,7 +63,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* ── Trust strip ── */}
+
             <section style={{ backgroundColor: 'var(--color-surface-2)', borderBottom: '1px solid var(--color-border)' }}>
                 <div className="container-custom">
                     <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0" style={{ '--tw-divide-opacity': '1', borderColor: 'var(--color-border)' }}>
@@ -80,12 +80,12 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* ── Flash Deals ── */}
+
             <section style={{ backgroundColor: 'var(--color-bg)' }} className="pt-8">
                 <FlashDeals />
             </section>
 
-            {/* ── Shop by Category ── */}
+
             <section className="container-custom py-10">
                 <div className="flex items-center justify-between mb-5">
                     <h2 className="text-lg font-bold" style={{ color: 'var(--color-text)' }}>Shop by Category</h2>
@@ -108,12 +108,12 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* ── Featured Products ── */}
+
             <section style={{ backgroundColor: 'var(--color-surface)', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }} className="py-8">
                 <ProductList featured={true} count={8} title="⭐ Featured Products" />
             </section>
 
-            {/* ── Brand Strip ── */}
+
             <section className="py-8 overflow-hidden" style={{ borderBottom: '1px solid var(--color-border)' }}>
                 <div className="container-custom mb-4">
                     <p className="text-xs font-semibold uppercase tracking-widest text-center" style={{ color: 'var(--color-text-faint)' }}>Top Brands</p>
@@ -125,17 +125,17 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* ── Latest Products ── */}
+
             <section className="py-8">
                 <ProductList count={12} title="🆕 New Arrivals" />
             </section>
 
-            {/* ── Testimonials ── */}
+
             <section style={{ backgroundColor: 'var(--color-surface)', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
                 <Testimonials />
             </section>
 
-            {/* ── Newsletter ── */}
+
             <section className="container-custom py-12">
                 <div className="max-w-lg mx-auto text-center space-y-4 animate-slideUp">
                     <h2 className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>Stay Updated</h2>

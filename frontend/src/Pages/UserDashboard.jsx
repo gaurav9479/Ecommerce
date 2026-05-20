@@ -74,7 +74,7 @@ const UserDashboard = () => {
     return (
         <div className="min-h-screen py-12">
             <div className="container-custom max-w-6xl">
-                {/* Top stats */}
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-slideUp">
                     {[
                         { label: 'Total Orders', value: orders.length, icon: '📦' },
@@ -92,10 +92,10 @@ const UserDashboard = () => {
 
                 <div className="flex flex-col md:flex-row gap-8">
 
-                    {/* Sidebar */}
+
                     <aside className="md:w-64 flex-shrink-0">
                         <div className="glass rounded-2xl p-6 sticky top-24">
-                            {/* Avatar */}
+
                             <div className="text-center mb-6">
                                 <div className="w-20 h-20 gradient-bg rounded-full mx-auto flex items-center justify-center text-white text-3xl font-black shadow-glow">
                                     {user?.name?.charAt(0).toUpperCase()}
@@ -105,7 +105,7 @@ const UserDashboard = () => {
                                 <span className="badge badge-success mt-2 text-xs">✓ Verified</span>
                             </div>
 
-                            {/* Nav */}
+
                             <nav className="space-y-2">
                                 {TABS.map(tab => (
                                     <button
@@ -125,10 +125,10 @@ const UserDashboard = () => {
                         </div>
                     </aside>
 
-                    {/* Content */}
+
                     <main className="flex-1 animate-fadeIn">
 
-                        {/* Profile Tab */}
+
                         {activeTab === "profile" && (
                             <div className="glass rounded-2xl p-8">
                                 <h3 className="text-2xl font-bold gradient-text mb-8">Edit Profile</h3>
@@ -156,7 +156,7 @@ const UserDashboard = () => {
                             </div>
                         )}
 
-                        {/* Orders Tab */}
+
                         {activeTab === "orders" && (
                             <div className="glass rounded-2xl p-8">
                                 <h3 className="text-2xl font-bold gradient-text mb-8">Order History</h3>
@@ -212,12 +212,12 @@ const UserDashboard = () => {
                             </div>
                         )}
 
-                        {/* Settings Tab */}
+
                         {activeTab === "settings" && (
                             <div className="glass rounded-2xl p-8 space-y-6">
                                 <h3 className="text-2xl font-bold gradient-text mb-8">Account Settings</h3>
 
-                                {/* Theme */}
+
                                 <div className="bg-slate-800/50 rounded-xl p-6">
                                     <h4 className="font-semibold text-white text-lg mb-2 flex items-center gap-2">
                                         <span>🎨</span> Theme Preferences
@@ -228,7 +228,7 @@ const UserDashboard = () => {
                                     </Link>
                                 </div>
 
-                                {/* Danger Zone */}
+
                                 <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-6">
                                     <h4 className="font-semibold text-red-400 text-lg mb-2 flex items-center gap-2">
                                         <span>⚠️</span> Danger Zone

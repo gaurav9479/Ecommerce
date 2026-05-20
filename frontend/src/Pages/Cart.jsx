@@ -198,7 +198,7 @@ const Cart = () => {
                                     </div>
                                 </div>
 
-                                {/* Coupon */}
+
                                 <div className="mb-6">
                                     <p className="text-slate-400 text-sm font-semibold mb-2">🎟️ Have a coupon?</p>
                                     <CouponInput orderAmount={calculateTotal()} onCouponApplied={setAppliedCoupon} />

@@ -22,7 +22,7 @@ function AdminDashboard() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    // Inventory Stock Management Modal State
+
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [tempTotalStock, setTempTotalStock] = useState("");
     const [tempReservedStock, setTempReservedStock] = useState("");
@@ -122,7 +122,7 @@ function AdminDashboard() {
         <div className="min-h-screen" style={{ backgroundColor: '#f8fafc', fontFamily: 'Inter, sans-serif', color: '#1e293b' }}>
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
 
-                {/* Header */}
+
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h1 className="text-xl font-bold text-gray-800">Seller Hub</h1>
@@ -139,7 +139,7 @@ function AdminDashboard() {
                     </div>
                 </div>
 
-                {/* Tab bar */}
+
                 <div className="bg-white border border-gray-200 rounded-xl mb-4 overflow-hidden">
                     <div className="flex border-b border-gray-100">
                         {TABS.map(tab => (
@@ -162,10 +162,10 @@ function AdminDashboard() {
                         ))}
                     </div>
 
-                    {/* ── Analytics Tab ── */}
+
                     {activeTab === 'analytics' && <AnalyticsDashboard />}
 
-                    {/* ── Products Tab ── */}
+
                     {activeTab === 'products' && (
                         <div className="overflow-x-auto">
                             {products.length === 0 ? (
@@ -225,7 +225,7 @@ function AdminDashboard() {
                         </div>
                     )}
 
-                    {/* ── Orders Tab ── */}
+
                     {activeTab === 'orders' && (
                         <div className="overflow-x-auto">
                             {orders.length === 0 ? (
@@ -290,7 +290,7 @@ function AdminDashboard() {
                         </div>
                     )}
                 </div>
-                {/* Stock Management Modal */}
+
                 {selectedProduct && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                         <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">

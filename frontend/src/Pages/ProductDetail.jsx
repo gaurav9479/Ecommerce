@@ -274,7 +274,7 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* Related Products */}
+
         {relatedProducts.length > 0 && (
           <div className="mt-16 animate-slideUp">
             <div className="flex items-center justify-between mb-6">

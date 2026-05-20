@@ -37,7 +37,7 @@ const Compare = () => {
     return (
         <div className="min-h-screen py-12">
             <div className="container-custom">
-                {/* Header */}
+
                 <div className="flex items-center justify-between mb-10 animate-slideUp">
                     <div>
                         <h1 className="text-4xl font-bold gradient-text mb-2">Product Comparison</h1>
@@ -50,7 +50,7 @@ const Compare = () => {
 
                 <div className="overflow-x-auto custom-scrollbar pb-4">
                     <table className="w-full min-w-[640px]">
-                        {/* Product images row */}
+
                         <thead>
                             <tr>
                                 <th className="w-40 text-left pb-6">
@@ -86,7 +86,7 @@ const Compare = () => {
                         </thead>
 
                         <tbody className="divide-y divide-slate-700/50">
-                            {/* Star Rating Row */}
+
                             <tr className="hover:bg-slate-800/30 transition-colors">
                                 <td className="py-4 pr-4">
                                     <span className="text-slate-400 text-sm font-medium">⭐ Rating</span>
@@ -100,7 +100,7 @@ const Compare = () => {
                                 ))}
                             </tr>
 
-                            {/* Other spec rows */}
+
                             {allKeys.filter(k => k !== 'rating').map((key) => (
                                 <tr key={key} className="hover:bg-slate-800/30 transition-colors">
                                     <td className="py-4 pr-4">
@@ -130,7 +130,7 @@ const Compare = () => {
                                 </tr>
                             ))}
 
-                            {/* Add to Cart row */}
+
                             <tr>
                                 <td className="py-6" />
                                 {compareList.map((product) => (
