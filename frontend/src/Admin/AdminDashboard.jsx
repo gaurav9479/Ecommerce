@@ -10,8 +10,8 @@ const API = import.meta.env.VITE_API_URL || "http://localhost:9000";
 const STATUS_COLORS = {
     Delivered: { bg: 'rgba(16,185,129,0.1)', color: '#10b981', dot: '#10b981' },
     Processing: { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', dot: '#3b82f6' },
-    Shipped:    { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', dot: '#f59e0b' },
-    Cancelled:  { bg: 'rgba(239,68,68,0.1)',  color: '#ef4444', dot: '#ef4444' },
+    Shipped: { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', dot: '#f59e0b' },
+    Cancelled: { bg: 'rgba(239,68,68,0.1)', color: '#ef4444', dot: '#ef4444' },
 };
 
 function AdminDashboard() {
@@ -21,6 +21,57 @@ function AdminDashboard() {
     const [activeTab, setActiveTab] = useState("analytics");
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    // Inventory Stock Management Modal State
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [tempTotalStock, setTempTotalStock] = useState("");
+    const [tempReservedStock, setTempReservedStock] = useState("");
+    const [updatingStock, setUpdatingStock] = useState(false);
+
+    const openStockModal = (product) => {
+        setSelectedProduct(product);
+        setTempTotalStock(product.totalStock ?? product.stock ?? 0);
+        setTempReservedStock(product.reservedStock ?? 0);
+    };
+
+    const handleStockUpdate = async (e) => {
+        e.preventDefault();
+        if (!selectedProduct) return;
+
+        setUpdatingStock(true);
+        try {
+            const payload = {};
+            if (tempTotalStock !== "" && tempTotalStock !== null) payload.totalStock = parseInt(tempTotalStock);
+            if (tempReservedStock !== "" && tempReservedStock !== null) payload.reservedStock = parseInt(tempReservedStock);
+
+            if (payload.reservedStock !== undefined && payload.totalStock !== undefined) {
+                if (payload.reservedStock > payload.totalStock) {
+                    throw new Error("Reserved stock cannot exceed total stock");
+                }
+            } else if (payload.reservedStock !== undefined && payload.totalStock === undefined) {
+                if (payload.reservedStock > (selectedProduct.totalStock ?? selectedProduct.stock ?? 0)) {
+                    throw new Error("Reserved stock cannot exceed current total stock");
+                }
+            } else if (payload.totalStock !== undefined && payload.reservedStock === undefined) {
+                if ((selectedProduct.reservedStock ?? 0) > payload.totalStock) {
+                    throw new Error("Total stock cannot be set below current reserved stock");
+                }
+            }
+
+            await axios.patch(
+                `${API}/api/v1/admin/products/${selectedProduct._id}/stock`,
+                payload,
+                { withCredentials: true }
+            );
+            toast.success("Inventory updated successfully!");
+            setSelectedProduct(null);
+            fetchData();
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error?.message || "Failed to update inventory");
+        } finally {
+            setUpdatingStock(false);
+        }
+    };
 
     useEffect(() => {
         if (!user || user.role !== "admin") { navigate("/admin/login"); return; }
@@ -55,8 +106,8 @@ function AdminDashboard() {
 
     const TABS = [
         { id: 'analytics', label: '📊 Analytics', count: null },
-        { id: 'products',  label: '🛒 Listings',  count: products.length },
-        { id: 'orders',    label: '📦 Orders',    count: orders.length },
+        { id: 'products', label: '🛒 Listings', count: products.length },
+        { id: 'orders', label: '📦 Orders', count: orders.length },
     ];
 
     if (loading) {
@@ -82,7 +133,7 @@ function AdminDashboard() {
                             ↻ Refresh
                         </button>
                         <Link to="/admin/products" className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition hover:opacity-90"
-                              style={{ backgroundColor: '#6366f1' }}>
+                            style={{ backgroundColor: '#6366f1' }}>
                             + New Listing
                         </Link>
                     </div>
@@ -93,9 +144,8 @@ function AdminDashboard() {
                     <div className="flex border-b border-gray-100">
                         {TABS.map(tab => (
                             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium transition-colors relative ${
-                                    activeTab === tab.id ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'
-                                }`}>
+                                className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium transition-colors relative ${activeTab === tab.id ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'
+                                    }`}>
                                 {tab.label}
                                 {tab.count !== null && (
                                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{
@@ -138,15 +188,25 @@ function AdminDashboard() {
                                             <tr key={p._id} className="hover:bg-gray-50 transition-colors">
                                                 <td className="px-5 py-3.5">
                                                     <div className="flex items-center gap-3">
-                                                        <img src={p.image?.[0] || ''} alt={p.title} onError={e => e.target.style.display='none'} className="w-10 h-10 rounded-lg object-cover border border-gray-100 bg-gray-50" />
+                                                        <img src={p.image?.[0] || ''} alt={p.title} onError={e => e.target.style.display = 'none'} className="w-10 h-10 rounded-lg object-cover border border-gray-100 bg-gray-50" />
                                                         <span className="font-medium text-gray-800 line-clamp-1 max-w-[200px]">{p.title}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-5 py-3.5 font-semibold text-gray-800">₹{p.price?.toLocaleString()}</td>
                                                 <td className="px-5 py-3.5">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <div className={`w-2 h-2 rounded-full ${p.stock > 10 ? 'bg-green-500' : p.stock > 0 ? 'bg-yellow-500' : 'bg-red-500'}`} />
-                                                        <span className="text-gray-600">{p.stock} units</span>
+                                                    <div className="flex flex-col gap-1">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <div className={`w-2 h-2 rounded-full ${(p.availableStock ?? p.stock ?? 0) > 10 ? 'bg-green-500' : (p.availableStock ?? p.stock ?? 0) > 0 ? 'bg-yellow-500' : 'bg-red-500'}`} />
+                                                            <span className="text-gray-800 font-semibold text-xs">Avail: {p.availableStock ?? p.stock ?? 0}</span>
+                                                        </div>
+                                                        <div className="text-[10px] text-gray-500 flex gap-2">
+                                                            <span>Total: {p.totalStock ?? p.stock ?? 0}</span>
+                                                            <span>•</span>
+                                                            <span className="text-purple-600">Res: {p.reservedStock ?? 0}</span>
+                                                            <button onClick={() => openStockModal(p)} className="ml-3 text-xs px-2 py-1 rounded bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition">
+                                                                Manage
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-5 py-3.5">
@@ -206,7 +266,7 @@ function AdminDashboard() {
                                                     <td className="px-5 py-3.5 font-bold text-gray-800">₹{order.totalAmount?.toLocaleString()}</td>
                                                     <td className="px-5 py-3.5">
                                                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
-                                                              style={{ backgroundColor: sc.bg, color: sc.color }}>
+                                                            style={{ backgroundColor: sc.bg, color: sc.color }}>
                                                             {order.status === 'Processing' && <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: sc.dot }} />}
                                                             {order.status}
                                                         </span>
@@ -230,6 +290,28 @@ function AdminDashboard() {
                         </div>
                     )}
                 </div>
+                {/* Stock Management Modal */}
+                {selectedProduct && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-lg font-bold mb-3">Manage Inventory — {selectedProduct.title}</h3>
+                            <form onSubmit={handleStockUpdate} className="space-y-3">
+                                <div>
+                                    <label className="text-xs text-gray-600">Total Stock</label>
+                                    <input type="number" min="0" value={tempTotalStock} onChange={e => setTempTotalStock(e.target.value)} className="w-full mt-1 p-2 border rounded" />
+                                </div>
+                                <div>
+                                    <label className="text-xs text-gray-600">Reserved Stock</label>
+                                    <input type="number" min="0" value={tempReservedStock} onChange={e => setTempReservedStock(e.target.value)} className="w-full mt-1 p-2 border rounded" />
+                                </div>
+                                <div className="flex justify-end gap-2 pt-2">
+                                    <button type="button" onClick={() => setSelectedProduct(null)} className="px-3 py-2 rounded border">Cancel</button>
+                                    <button type="submit" disabled={updatingStock} className="px-3 py-2 rounded bg-indigo-600 text-white disabled:opacity-50">{updatingStock ? 'Saving...' : 'Save'}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -9,6 +9,7 @@ export default function AdminProductForm() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [stock, setStock] = useState("");
+  const [reservedStock, setReservedStock] = useState(0);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ export default function AdminProductForm() {
     formData.append("description", description);
     formData.append("category", category);
     formData.append("stock", stock);
+    formData.append("reservedStock", reservedStock);
 
     images.forEach((img) => {
       formData.append("images", img);
@@ -109,6 +111,17 @@ export default function AdminProductForm() {
                 placeholder="0"
                 required
                 />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Reserved Stock (optional)</label>
+              <input
+              type="number"
+              value={reservedStock}
+              onChange={(e) => setReservedStock(e.target.value)}
+              className="w-full p-2.5 rounded border border-gray-300 text-gray-900 outline-none focus:border-[#2874f0] focus:ring-1 focus:ring-[#2874f0] transition-colors"
+              placeholder="0"
+              />
             </div>
 
             {/* Category */}

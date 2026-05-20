@@ -1,6 +1,7 @@
 import { Orders as Order } from "../models/order.model.js";
 import { Cart } from "../models/cart.model.js";
 import { Product } from "../models/product.model.js";
+import { StockHistory } from "../models/stockHistory.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -23,6 +24,8 @@ export const createOrder = asyncHandler(async (req, res) => {
 
 
     const orderItems = [];
+    const productsToUpdate = [];
+
     for (const item of cart.items) {
         const product = await Product.findById(item.product);
 
@@ -30,21 +33,19 @@ export const createOrder = asyncHandler(async (req, res) => {
             throw new ApiError(404, `Product ${item.product._id} not found`);
         }
 
-        if (product.stock < item.quantity) {
+        if (product.availableStock < item.quantity) {
             throw new ApiError(400, `Insufficient stock for ${product.title}`);
         }
 
         orderItems.push({
             product: product._id,
             quantity: item.quantity,
-            price: product.price
+            price: product.price,
+            title: product.title || ""
         });
 
-
-        product.stock -= item.quantity;
-        await product.save();
+        productsToUpdate.push({ product, quantity: item.quantity });
     }
-
 
     const order = await Order.create({
         user: userId,
@@ -54,9 +55,25 @@ export const createOrder = asyncHandler(async (req, res) => {
         paymentIntentId,
         timeSlot,
         location,
-        status: 'Processing'
+        status: 'Confirmed'
     });
 
+    for (const { product, quantity } of productsToUpdate) {
+        const stockBefore = product.totalStock;
+        product.totalStock -= quantity;
+        await product.save();
+
+        await StockHistory.create({
+            product: product._id,
+            order: order._id,
+            action: 'DEDUCTED',
+            quantityChange: -quantity,
+            stockBefore,
+            stockAfter: product.totalStock,
+            performedBy: userId,
+            note: 'Order checkout deduction'
+        });
+    }
 
     cart.items = [];
     await cart.save();
@@ -183,7 +200,7 @@ export const getAnalytics = asyncHandler(async (req, res) => {
 
     const [allOrders, products] = await Promise.all([
         Order.find().populate('items.product', 'title category price').sort({ createdAt: 1 }),
-        Product.find({}, 'title price stock category compareCount rating numReviews')
+        Product.find({}, 'title price totalStock reservedStock category compareCount rating numReviews')
     ]);
 
     // ── KPIs ──────────────────────────────────────────────────────────────────
