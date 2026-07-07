@@ -34,14 +34,19 @@ export const WishlistProvider = ({ children }) => {
     };
 
     const toggleWishlist = async (productId) => {
-        if (!user) return false;
+        if (!user) {
+            const error = new Error("Authentication required");
+            error.response = { status: 401 };
+            throw error;
+        }
+
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/wishlist/toggle`,
                 { productId },
                 { withCredentials: true }
             );
-            
+
             // Refresh local state
             await fetchWishlist();
             return response.data.data.action === 'added';

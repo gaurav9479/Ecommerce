@@ -20,7 +20,7 @@ import AdminRegister from './Admin/AdminRegister';
 import AdminProductForm from './Admin/AdminProductForm';
 import UserDashboard from './Pages/UserDashboard';
 
-import { PrivateRoute } from './Routes/ProtectedRoutes';
+import { AdminRoute, PrivateRoute } from './Routes/ProtectedRoutes';
 import { CompareProvider } from './Context/CompareContext';
 import { NotificationProvider } from './Context/NotificationContext';
 
@@ -42,16 +42,24 @@ const router = createBrowserRouter([
         element: <Register />
       },
       {
+        path: 'products',
+        element: <Shop />
+      },
+      {
+        path: 'product/:id',
+        element: <ProductDetail />
+      },
+      {
+        path: 'compare',
+        element: <Compare />
+      },
+      {
+        path: 'themes',
+        element: <ThemePage />
+      },
+      {
         element: <PrivateRoute />,
         children: [
-          {
-            path: 'products',
-            element: <Shop />
-          },
-          {
-            path: 'product/:id',
-            element: <ProductDetail />
-          },
           {
             path: 'cart',
             element: <Cart />
@@ -73,18 +81,10 @@ const router = createBrowserRouter([
             element: <UserDashboard />
           },
           {
-            path: 'compare',
-            element: <Compare />
-          },
-          {
             path: 'order-tracking/:orderId',
             element: <OrderTracking />
           }
         ]
-      },
-      {
-        path: 'themes',
-        element: <ThemePage />
       },
       {
         path: '*',
@@ -105,12 +105,17 @@ const router = createBrowserRouter([
         element: <AdminRegister />
       },
       {
-        path: 'dashboard',
-        element: <AdminDashboard />
-      },
-      {
-        path: 'products',
-        element: <AdminProductForm />
+        element: <AdminRoute />,
+        children: [
+          {
+            path: 'dashboard',
+            element: <AdminDashboard />
+          },
+          {
+            path: 'products',
+            element: <AdminProductForm />
+          }
+        ]
       }
     ]
   }

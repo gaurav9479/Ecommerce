@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../Context/CartContext';
 import { useWishlist } from '../../Context/WishlistContext';
 import StarRating from '../StarRating';
 import toast from 'react-hot-toast';
 
 const QuickViewModal = ({ product, onClose }) => {
+    const navigate = useNavigate();
     const { addToCart } = useCart();
     const { isInWishlist, toggleWishlist } = useWishlist();
 
@@ -24,7 +25,13 @@ const QuickViewModal = ({ product, onClose }) => {
 
     const handleAddToCart = async () => {
         try { await addToCart(product._id, 1); onClose(); }
-        catch { toast.error('Please login to add to cart'); }
+        catch (error) {
+            if (error.response?.status === 401) {
+                navigate('/login');
+            } else {
+                toast.error('Please login to add to cart');
+            }
+        }
     };
 
     return (
@@ -94,7 +101,17 @@ const QuickViewModal = ({ product, onClose }) => {
                             )}
                             <div className="flex gap-2">
                                 <button
-                                    onClick={() => toggleWishlist(product._id)}
+                                    onClick={async () => {
+                                        try {
+                                            await toggleWishlist(product._id);
+                                        } catch (error) {
+                                            if (error.response?.status === 401) {
+                                                navigate('/login');
+                                            } else {
+                                                toast.error('Please login to manage wishlist');
+                                            }
+                                        }
+                                    }}
                                     className="flex-1 btn-secondary text-xs"
                                 >
                                     {isInWishlist(product._id) ? '❤️ Remove' : '🤍 Wishlist'}

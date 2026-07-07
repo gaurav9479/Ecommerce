@@ -34,7 +34,12 @@ export const CartProvider = ({ children }) => {
     }, [user]);
 
     const addToCart = async (productId, quantity = 1) => {
-        if (!user) return false;
+        if (!user) {
+            const error = new Error("Authentication required");
+            error.response = { status: 401 };
+            throw error;
+        }
+
         try {
             await axios.post(
                 `${import.meta.env.VITE_API_URL || "http://localhost:9000"}/api/v1/cart/add`,
