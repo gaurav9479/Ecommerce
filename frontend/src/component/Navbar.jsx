@@ -51,16 +51,16 @@ const Navbar = () => {
 
   return (
     <header style={{ backgroundColor: 'var(--color-surface)', borderBottom: '1px solid var(--color-border)' }} className="sticky top-0 z-50">
-
+      {/* Top bar */}
       <div className="container-custom">
         <div className="flex items-center gap-4 py-3">
 
-
+          {/* Logo */}
           <Link to="/" className="flex-shrink-0 text-xl font-black tracking-tight" style={{ color: 'var(--color-primary)' }}>
             GLIPKART
           </Link>
 
-
+          {/* Search — main feature */}
           <form onSubmit={handleSearch} className="flex-1 max-w-2xl hidden sm:flex">
             <div className="flex w-full">
               <input
@@ -83,10 +83,10 @@ const Navbar = () => {
             </div>
           </form>
 
-
+          {/* Right icons */}
           <div className="flex items-center gap-1 ml-auto sm:ml-0">
 
-
+            {/* Theme */}
             <Link to="/themes" className="btn-ghost hidden md:flex flex-col items-center gap-0.5 px-3 py-1.5" title="Theme">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
@@ -94,7 +94,7 @@ const Navbar = () => {
               <span className="text-[10px]">Theme</span>
             </Link>
 
-
+            {/* Wishlist */}
             <Link to="/wishlist" className="btn-ghost hidden md:flex flex-col items-center gap-0.5 px-3 py-1.5 relative">
               <div className="relative">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@ const Navbar = () => {
               <span className="text-[10px]">Wishlist</span>
             </Link>
 
-
+            {/* Cart */}
             <Link to="/cart" className="btn-ghost hidden md:flex flex-col items-center gap-0.5 px-3 py-1.5 relative">
               <div className="relative">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@ const Navbar = () => {
               <span className="text-[10px]">Cart</span>
             </Link>
 
-
+            {/* User */}
             {user ? (
               <div className="relative" ref={userRef}>
                 <button
@@ -184,7 +184,7 @@ const Navbar = () => {
               </div>
             )}
 
-
+            {/* Mobile icons */}
             <Link to="/cart" className="btn-ghost md:hidden relative p-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -200,7 +200,7 @@ const Navbar = () => {
           </div>
         </div>
 
-
+        {/* Mobile search */}
         <form onSubmit={handleSearch} className="sm:hidden pb-3">
           <div className="flex">
             <input type="text" placeholder="Search products..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="input-field text-sm flex-1" style={{ borderRadius: '6px 0 0 6px', borderRight: 'none' }} />
@@ -211,7 +211,7 @@ const Navbar = () => {
         </form>
       </div>
 
-
+      {/* Category strip */}
       <div style={{ backgroundColor: 'var(--color-bg)', borderTop: '1px solid var(--color-border)' }} className="hidden md:block">
         <div className="container-custom">
           <div className="flex items-center gap-6 overflow-x-auto custom-scrollbar py-2.5">
@@ -240,7 +240,7 @@ const Navbar = () => {
         </div>
       </div>
 
-
+      {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden animate-fadeIn" style={{ backgroundColor: 'var(--color-surface)', borderTop: '1px solid var(--color-border)' }}>
           <div className="container-custom py-4 space-y-1">
