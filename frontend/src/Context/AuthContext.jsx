@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get("/users/me");
+        const { data } = await api.get("/users/me", { _skipRedirect: true });
         setUser(data.data.user);
       } catch {
         setUser(null);

@@ -27,7 +27,7 @@ api.interceptors.response.use(
             } catch (refreshError) {
                 console.warn("Session expired. Redirecting to login...");
 
-                if (window.location.pathname !== "/login" && !window.location.pathname.startsWith("/admin/login")) {
+                if (!originalRequest._skipRedirect && window.location.pathname !== "/login" && !window.location.pathname.startsWith("/admin/login")) {
                     const isAdminRoute = window.location.pathname.startsWith("/admin");
                     window.location.href = isAdminRoute ? "/admin/login" : "/login";
                 }
