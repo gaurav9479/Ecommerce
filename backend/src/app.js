@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
@@ -68,6 +69,19 @@ app.use("/api/v1/coupons", couponRoutes);
 
 app.use(errorHandler);
 
+
+app.get("/api/ping", async (req, res) => {
+    try {
+        if (mongoose.connection.readyState === 1) {
+            await mongoose.connection.db.admin().ping();
+            return res.status(200).json({ success: true, message: "Pong! DB is awake." });
+        } else {
+            return res.status(500).json({ success: false, message: "DB not connected" });
+        }
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "DB ping failed" });
+    }
+});
 
 app.get("/", (req, res) => {
     res.send("Ecommerce API is running 🚀");
