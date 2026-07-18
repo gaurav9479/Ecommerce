@@ -25,12 +25,10 @@ api.interceptors.response.use(
 
                 return api(originalRequest);
             } catch (refreshError) {
-                console.warn("Session expired. Redirecting to login...");
-
-                if (!originalRequest._skipRedirect && window.location.pathname !== "/login" && !window.location.pathname.startsWith("/admin/login")) {
-                    const isAdminRoute = window.location.pathname.startsWith("/admin");
-                    window.location.href = isAdminRoute ? "/admin/login" : "/login";
-                }
+                console.warn("Session expired or refresh failed.");
+                // Remove global redirect: let the frontend React components (PrivateRoutes, event handlers) 
+                // manage redirects via react-router to avoid edge cases on public pages.
+                return Promise.reject(refreshError);
             }
         }
 
