@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 const CATEGORIES = ['Smartphones', 'Laptops', 'Headphones', 'Cameras', 'Tablets', 'Watches', 'Accessories'];
 
 const Navbar = () => {
-  const { user, setUser } = useAuth();
+  const { user, setUser, logout } = useAuth();
   const { cartCount } = useCart();
   const { wishlistItems } = useWishlist();
   const { compareList } = useCompare();
@@ -29,15 +29,8 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:9000'}/api/v1/users/logout`, {}, { withCredentials: true });
-      setUser(null);
-      localStorage.removeItem('user');
-      toast.success('Logged out');
-      navigate('/');
-    } catch {
-      toast.error('Logout failed');
-    }
+    await logout();
+    navigate('/');
   };
 
   const handleSearch = (e) => {

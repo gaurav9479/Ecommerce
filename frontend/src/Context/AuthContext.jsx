@@ -39,10 +39,12 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await api.post("/users/logout");
+    } catch (err) {
+      console.warn("Backend logout returned error, clearing local state anyway");
+    } finally {
       setUser(null);
+      localStorage.removeItem("user");
       toast.success("Logged out successfully");
-    } catch {
-      toast.error("Logout failed");
     }
   };
 
