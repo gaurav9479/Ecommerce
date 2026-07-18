@@ -266,5 +266,39 @@ export const updateProductStock = asyncHandler(async (req, res) => {
   );
 });
 
-export { loginAdmin, registerAdmin, getAdminProducts };
+export const updateFlashDeal = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const { isActive, discount, durationHours } = req.body;
 
+  const product = await Product.findById(productId);
+  if (!product) {
+    throw new ApiError(404, "Product not found");
+  }
+
+  // Authorize: Only owner can manage their flash deals
+  if (product.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You do not have permission to manage this product's flash deal");
+  }
+
+  if (isActive) {
+    if (!discount || discount < 0 || discount > 100) {
+      throw new ApiError(400, "Valid discount percentage (0-100) is required to activate flash deal");
+    }
+    const hours = Number(durationHours) || 6;
+    const expiresAt = new Date(Date.now() + hours * 3600000);
+    
+    product.flashDeal = { isActive: true, expiresAt };
+    product.discount = discount;
+  } else {
+    product.flashDeal = { isActive: false, expiresAt: null };
+    product.discount = 0;
+  }
+
+  await product.save();
+  
+  return res.status(200).json(
+    new ApiResponse(200, product, isActive ? "Flash deal activated successfully" : "Flash deal deactivated")
+  );
+});
+
+export { loginAdmin, registerAdmin, getAdminProducts };
