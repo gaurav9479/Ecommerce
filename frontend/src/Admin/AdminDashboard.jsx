@@ -73,6 +73,54 @@ function AdminDashboard() {
         }
     };
 
+    // Flash Deal Management Modal State
+    const [selectedFlashProduct, setSelectedFlashProduct] = useState(null);
+    const [flashIsActive, setFlashIsActive] = useState(false);
+    const [flashDiscount, setFlashDiscount] = useState("");
+    const [flashDurationHours, setFlashDurationHours] = useState(6);
+    const [updatingFlash, setUpdatingFlash] = useState(false);
+
+    const openFlashModal = (product) => {
+        setSelectedFlashProduct(product);
+        setFlashIsActive(product.flashDeal?.isActive || false);
+        setFlashDiscount(product.discount || "");
+        
+        if (product.flashDeal?.isActive && product.flashDeal?.expiresAt) {
+            const diffMs = new Date(product.flashDeal.expiresAt) - Date.now();
+            if (diffMs > 0) {
+                setFlashDurationHours(Math.max(1, Math.round(diffMs / 3600000)));
+            } else {
+                setFlashDurationHours(6);
+            }
+        } else {
+            setFlashDurationHours(6);
+        }
+    };
+
+    const handleFlashUpdate = async (e) => {
+        e.preventDefault();
+        if (!selectedFlashProduct) return;
+        setUpdatingFlash(true);
+        try {
+            await axios.patch(
+                `${API}/api/v1/admin/products/${selectedFlashProduct._id}/flash-deal`,
+                { 
+                    isActive: flashIsActive, 
+                    discount: Number(flashDiscount), 
+                    durationHours: Number(flashDurationHours) 
+                },
+                { withCredentials: true }
+            );
+            toast.success("Flash deal configured successfully!");
+            setSelectedFlashProduct(null);
+            fetchData();
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error?.message || "Failed to configure flash deal");
+        } finally {
+            setUpdatingFlash(false);
+        }
+    };
+
     useEffect(() => {
         if (!user || user.role !== "admin") { navigate("/admin/login"); return; }
         fetchData();
@@ -178,7 +226,7 @@ function AdminDashboard() {
                                 <table className="w-full text-left text-sm">
                                     <thead style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                                         <tr>
-                                            {['Product', 'Price', 'Stock', 'Category', 'Status'].map(h => (
+                                            {['Product', 'Price', 'Stock', 'Category', 'Flash Deal', 'Status'].map(h => (
                                                 <th key={h} className="px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">{h}</th>
                                             ))}
                                         </tr>
@@ -211,6 +259,11 @@ function AdminDashboard() {
                                                 </td>
                                                 <td className="px-5 py-3.5">
                                                     <span className="text-xs px-2 py-0.5 rounded capitalize" style={{ backgroundColor: '#f1f5f9', color: '#475569' }}>{p.category}</span>
+                                                </td>
+                                                <td className="px-5 py-3.5">
+                                                    <button onClick={() => openFlashModal(p)} className={`text-xs px-2 py-1 rounded transition flex items-center gap-1 ${p.flashDeal?.isActive ? 'bg-orange-50 text-orange-600 hover:bg-orange-100' : 'bg-gray-50 text-gray-500 hover:bg-gray-200'}`}>
+                                                        ⚡ {p.flashDeal?.isActive ? `${p.discount}% OFF` : 'Set Deal'}
+                                                    </button>
                                                 </td>
                                                 <td className="px-5 py-3.5">
                                                     <span className={`text-xs font-bold uppercase ${p.stock > 0 ? 'text-green-600' : 'text-red-500'}`}>
@@ -307,6 +360,50 @@ function AdminDashboard() {
                                 <div className="flex justify-end gap-2 pt-2">
                                     <button type="button" onClick={() => setSelectedProduct(null)} className="px-3 py-2 rounded border">Cancel</button>
                                     <button type="submit" disabled={updatingStock} className="px-3 py-2 rounded bg-indigo-600 text-white disabled:opacity-50">{updatingStock ? 'Saving...' : 'Save'}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {selectedFlashProduct && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-lg font-bold mb-3 flex items-center gap-2">⚡ Flash Deal — {selectedFlashProduct.title}</h3>
+                            <form onSubmit={handleFlashUpdate} className="space-y-4 mt-4">
+                                <div className="flex items-center gap-3">
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked={flashIsActive} onChange={e => setFlashIsActive(e.target.checked)} className="sr-only peer" />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                                    </label>
+                                    <span className="text-sm font-medium text-gray-700">{flashIsActive ? 'Deal Active' : 'Deal Inactive'}</span>
+                                </div>
+                                
+                                {flashIsActive && (
+                                    <>
+                                        <div>
+                                            <label className="text-xs text-gray-600 font-medium">Discount Percentage (%)</label>
+                                            <input type="number" min="0" max="100" value={flashDiscount} onChange={e => setFlashDiscount(e.target.value)} required placeholder="e.g. 20" className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:border-orange-400" />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs text-gray-600 font-medium">Duration (Hours from now)</label>
+                                            <select value={flashDurationHours} onChange={e => setFlashDurationHours(e.target.value)} className="w-full mt-1 p-2 border border-gray-200 rounded focus:outline-none focus:border-orange-400">
+                                                <option value={1}>1 Hour (Quick Sale)</option>
+                                                <option value={3}>3 Hours</option>
+                                                <option value={6}>6 Hours</option>
+                                                <option value={12}>12 Hours (Half Day)</option>
+                                                <option value={24}>24 Hours (Full Day)</option>
+                                                <option value={48}>48 Hours</option>
+                                            </select>
+                                        </div>
+                                    </>
+                                )}
+                                
+                                <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
+                                    <button type="button" onClick={() => setSelectedFlashProduct(null)} className="px-4 py-2 rounded text-sm font-medium border border-gray-200 hover:bg-gray-50 transition">Cancel</button>
+                                    <button type="submit" disabled={updatingFlash} className="px-4 py-2 rounded text-sm font-medium bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50 transition">
+                                        {updatingFlash ? 'Saving...' : 'Save Deal'}
+                                    </button>
                                 </div>
                             </form>
                         </div>
